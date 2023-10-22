@@ -1,0 +1,10 @@
+## Interface: 100107
+## Title:|cffd6266cFastOpen|r
+## Notes: Auto Open Items
+## Author: BloodDragon2580
+## Version: 1.0
+## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
+
+embeds.xml
+locale\locale.xml
+FastOpen.lua
