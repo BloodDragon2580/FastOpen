@@ -1,28 +1,30 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("FastOpen", false)
 local FastOpen = CreateFrame('Frame')
 
-FastOpen:SetScript('OnEvent', function(self, event, ...) self[event](...) end)
+FastOpen:SetScript('OnEvent', function(self, event, ...) self[event](event, ...) end)
 
-local atBank, atMail, atMerchant, isLooting
+print(L["loading"])
 
-local autoOpenItems = {
+local atBank, atMail, atMerchant, inCombat, isLooting, isCrafting
+
+local AllowedItemsList = {
 
 --	WORLD OF WARCRAFT:	EVENTS RETAIL
 	--	Darkmoon Faire			Monthly Faire
-			[ 78910] = true, 	-- Sack o' Tokens			
-			[ 78909] = true, 	-- Sack o' Tokens			
-			[ 78908] = true, 	-- Sack o' Tokens			
-			[ 78907] = true, 	-- Sack o' Tokens			
-			[ 78906] = true, 	-- Sack o' Tokens			
-			[ 78905] = true, 	-- Sack o' Tokens			
-			[ 78904] = true, 	-- Pouch o' Tokens			
-			[ 78903] = true,  	-- Pouch o' Tokens			
-			[ 78902] = true,  	-- Pouch o' Tokens			
-			[ 78901] = true,  	-- Pouch o' Tokens			
-			[ 78900] = true,  	-- Pouch o' Tokens			
-			[ 78899] = true,  	-- Pouch o' Tokens			
-			[ 78898] = true, 	-- Sack o' Tokens			
-			[ 78897] = true,  	-- Pouch o' Tokens			
+			[78910] = true, 	-- Sack o' Tokens			
+			[78909] = true, 	-- Sack o' Tokens			
+			[78908] = true, 	-- Sack o' Tokens			
+			[78907] = true, 	-- Sack o' Tokens			
+			[78906] = true, 	-- Sack o' Tokens			
+			[78905] = true, 	-- Sack o' Tokens			
+			[78904] = true, 	-- Pouch o' Tokens			
+			[78903] = true,  	-- Pouch o' Tokens			
+			[78902] = true,  	-- Pouch o' Tokens			
+			[78901] = true,  	-- Pouch o' Tokens			
+			[78900] = true,  	-- Pouch o' Tokens			
+			[78899] = true,  	-- Pouch o' Tokens			
+			[78898] = true, 	-- Sack o' Tokens			
+			[78897] = true,  	-- Pouch o' Tokens			
 	
 	--	Trial of Style			Random Event
 			[147576] = true,	-- Trial of Style Consolation Prize
@@ -47,7 +49,7 @@ local autoOpenItems = {
 	--	Brewfest				Brewfest Event										Older Items in Events Classic
 			[117393] = true,	-- Keg-Shaped Treasure Chest
 			[149752] = true,	-- Keg-Shaped Treasure Box
-			[ 54535] = true,	-- Keg-Shaped Treasure Chest
+			[54535] = true,	-- Keg-Shaped Treasure Chest
 
 	--	Hallows End				Halloween Event										Older Items in Events Classic
 		--	Quests & Dailies
@@ -60,8 +62,8 @@ local autoOpenItems = {
 			[149503] = true,	-- Stolen Gift
 			[116762] = true,  	-- Stolen Present			
 			[117395] = true, 	-- Stolen Present			
-			[ 93626] = true,  	-- Stolen Present			
-			[ 73792] = true,  	-- Stolen Present			
+			[93626] = true,  	-- Stolen Present			
+			[73792] = true,  	-- Stolen Present			
 		--	Tree Gifts
 			[192094] = true,	-- Toy - Falling Star Catcher
 			[192093] = true,	-- Toy - Falling Star Flinger
@@ -81,9 +83,9 @@ local autoOpenItems = {
 			[128652] = true,	-- Toy - Red Wooden Shield
 			[116761] = true,	-- Toy - Crashin' Thrashin' Shredder Controller
 			[104319] = true,	-- Toy - Crashin' Thrashin' Flyer Controller
-			[ 90892] = true,	-- Toy - Special Edition Foot Ball & The Pigskin
-			[ 70938] = true,	-- Mog - Gaudy Winter Veil Sweater
-			[ 67443] = true,	-- Toy - MiniZep Controller
+			[90892] = true,	-- Toy - Special Edition Foot Ball & The Pigskin
+			[70938] = true,	-- Mog - Gaudy Winter Veil Sweater
+			[67443] = true,	-- Toy - MiniZep Controller
 
 --	10	WORLD OF WARCRAFT:	DRAGONFLIGHT
 
@@ -1073,253 +1075,253 @@ local autoOpenItems = {
 			[103624] = true,	-- Treasures of the Vale
 			[103535] = true,	-- Bulging Bag of Charms (China)
 			[102137] = true,	-- Unclaimed Black Market Container
-			[ 98562] = true,	-- Sunreaver Bounty
-			[ 98560] = true,	-- Arcane Trove
-			[ 98133] = true,	-- Greater Cache of Treasures
-			[ 98103] = true,	-- Gigantic Sack of Coins
-			[ 98102] = true,	-- Overflowing Sack of Coins
-			[ 98101] = true,	-- Enormous Sack of Coins
-			[ 98100] = true,	-- Humongous Sack of Coins
-			[ 98099] = true,	-- Giant Sack of Coins
-			[ 98098] = true,	-- Bulging Sack of Coins
-			[ 98097] = true,	-- Huge Sack of Coins
-			[ 98096] = true,	-- Large Sack of Coins
-			[ 98095] = true,	-- Brawler's Pet Supplies
-			[ 97957] = true,	-- Surplus Supplies
-			[ 97956] = true,	-- Surplus Supplies
-			[ 97955] = true,	-- Surplus Supplies
-			[ 97954] = true,	-- Surplus Supplies
-			[ 97953] = true,	-- Surplus Supplies
-			[ 97952] = true,	-- Surplus Supplies
-			[ 97951] = true,	-- Surplus Supplies
-			[ 97950] = true,	-- Surplus Supplies
-			[ 97949] = true,	-- Surplus Supplies
-			[ 97948] = true,	-- Surplus Supplies
-			[ 97565] = true,	-- Unclaimed Black Market Container
-			[ 97153] = true,	-- Spoils of the Thunder King
-			[ 95619] = true,	-- Amber Encased Treasure Pouch
-			[ 95618] = true,	-- Cache of Mogu Riches
-			[ 95617] = true,	-- Dividends of the Everlasting Spring
-			[ 95602] = true,	-- Stormtouched Cache
-			[ 95601] = true,	-- Shiny Pile of Refuse
-			[ 95469] = true,	-- Serpent's Heart
-			[ 95343] = true,	-- Treasures of the Thunder King
-			[ 94566] = true,	-- Fortuitous Coffer
-			[ 94553] = true,	-- Notes on Lightning Steel
-			[ 94296] = true,	-- Cracked Primal Egg
-			[ 94220] = true,	-- Sunreaver Bounty
-			[ 94219] = true,	-- Arcane Trove
-			[ 94207] = true,	-- Fabled Pandaren Pet Supplies
-			[ 94159] = true,	-- Small Bag of Zandalari Supplies
-			[ 94158] = true,	-- Big Bag of Zandalari Supplies
-			[ 93724] = true,	-- Darkmoon Game Prize
-			[ 93360] = true,	-- Serpent's Cache
-			[ 93200] = true,	-- Tome of the Serpent
-			[ 93199] = true,	-- Tome of the Crane
-			[ 93198] = true,	-- Tome of the Tiger
-			[ 93149] = true,	-- Pandaren Spirit Pet Supplies
-			[ 93148] = true,	-- Pet Supplies
-			[ 93147] = true,	-- Pandaren Spirit Pet Supplies
-			[ 93146] = true,	-- Pandaren Spirit Pet Supplies
-			[ 92960] = true,	-- Silkworm Cocoon
-			[ 92813] = true,	-- Greater Cache of Treasures
-			[ 92794] = true,	-- Ride Ticket Book
-			[ 92793] = true,	-- Ride Ticket Book
-			[ 92792] = true,	-- Ride Ticket Book
-			[ 92791] = true,	-- Ride Ticket Book
-			[ 92790] = true,	-- Ride Ticket Book
-			[ 92789] = true,	-- Ride Ticket Book
-			[ 92788] = true,	-- Ride Ticket Book
-			[ 92744] = true,	-- Heavy Sack of Gold
-			[ 92718] = true,	-- Brawler's Purse
-			[ 91086] = true,	-- Darkmoon Pet Supplies
-			[ 90840] = true,	-- Marauder's Gleaming Sack of Gold
-			[ 90839] = true,	-- Cache of Sha-Touched Gold
-			[ 90818] = true,	-- Misty Satchel of Exotic Mysteries
-			[ 90735] = true,	-- Goodies from Nomi
-			[ 90635] = true,	-- Hero's Purse
-			[ 90634] = true,	-- Hero's Purse
-			[ 90633] = true,	-- Hero's Purse
-			[ 90632] = true,	-- Hero's Purse
-			[ 90631] = true,	-- Hero's Purse
-			[ 90630] = true,	-- Hero's Purse
-			[ 90629] = true,	-- Hero's Purse
-			[ 90628] = true,	-- Hero's Purse
-			[ 90627] = true,	-- Hero's Purse
-			[ 90626] = true,	-- Hero's Purse
-			[ 90625] = true,	-- Treasures of the Vale
-			[ 90624] = true,	-- Hero's Purse
-			[ 90623] = true,	-- Hero's Purse
-			[ 90622] = true,	-- Hero's Purse
-			[ 90621] = true,	-- Hero's Purse
-			[ 90537] = true,	-- Winner's Reward
-			[ 90406] = true,	-- Facets of Research
-			[ 90401] = true,	-- Facets of Research
-			[ 90400] = true,	-- Facets of Research
-			[ 90399] = true,	-- Facets of Research
-			[ 90398] = true,	-- Facets of Research
-			[ 90397] = true,	-- Facets of Research
-			[ 90395] = true,	-- Facets of Research
-			[ 90165] = true,	-- Golden Chest of the Lich Lord
-			[ 90164] = true,	-- Golden Chest of the Cycle
-			[ 90163] = true,	-- Golden Chest of the Howling Beast
-			[ 90162] = true,	-- Golden Chest of the Regal Lord
-			[ 90161] = true,	-- Golden Chest of the Holy Warrior
-			[ 90160] = true,	-- Golden Chest of the Light
-			[ 90159] = true,	-- Golden Chest of the Silent Assassin
-			[ 90158] = true,	-- Golden Chest of the Elemental Triad
-			[ 90157] = true,	-- Golden Chest of Windfury
-			[ 90156] = true,	-- Golden Chest of the Betrayer
-			[ 90155] = true,	-- Golden Chest of the Golden King
-			[ 90041] = true,	-- Spoils of Theramore
-			[ 89991] = true,	-- Pandaria Fireworks
-			[ 89858] = true,	-- Cache of Mogu Riches
-			[ 89857] = true,	-- Dividends of the Everlasting Spring
-			[ 89856] = true,	-- Amber Encased Treasure Pouch
-			[ 89810] = true,	-- Bounty of a Sundered Land
-			[ 89808] = true,	-- Dividends of the Everlasting Spring
-			[ 89807] = true,	-- Amber Encased Treasure Pouch
-			[ 89804] = true,	-- Cache of Mogu Riches
-			[ 89613] = true,	-- Cache of Treasures
-			[ 89610] = true,	-- Pandaria Herbs
-			[ 89609] = true,	-- Crate of Dust
-			[ 89608] = true,	-- Crate of Ore
-			[ 89607] = true,	-- Crate of Leather
-			[ 89428] = true,	-- Ancient Mogu Treasure
-			[ 89427] = true,	-- Ancient Mogu Treasure
-			[ 89125] = true,	-- Sack of Pet Supplies
-		--	[ 88567] = false,	-- Ghost Iron Lockbox
-			[ 88496] = true,	-- Sealed Crate
-		--	[ 88165] = false,	-- Vine-Cracked Junkbox
-			[ 87730] = true,	-- Sack of Crocolisk Belly
-			[ 87729] = true,	-- Sack of Golden Carp
-			[ 87728] = true,	-- Sack of Krasarang Paddlefish
-			[ 87727] = true,	-- Sack of Reef Octopus
-			[ 87726] = true,	-- Sack of Jewel Danio
-			[ 87725] = true,	-- Sack of Tiger Gourami
-			[ 87724] = true,	-- Sack of Redbelly Mandarin
-			[ 87723] = true,	-- Sack of Emperor Salmon
-			[ 87722] = true,	-- Sack of Giant Mantis Shrimp
-			[ 87721] = true,	-- Sack of Jade Lungfish
-			[ 87716] = true,	-- Sack of White Turnips
-			[ 87715] = true,	-- Sack of Pink Turnips
-			[ 87714] = true,	-- Sack of Striped Melons
-			[ 87713] = true,	-- Sack of Jade Squash
-			[ 87712] = true,	-- Sack of Witchberries
-			[ 87710] = true,	-- Sack of Red Blossom Leeks
-			[ 87709] = true,	-- Sack of Scallions
-			[ 87708] = true,	-- Sack of Mogu Pumpkins
-			[ 87707] = true,	-- Sack of Juicycrunch Carrots
-			[ 87706] = true,	-- Sack of Green Cabbages
-			[ 87705] = true,	-- Sack of Wildfowl Breasts
-			[ 87704] = true,	-- Sack of Raw Crab Meat
-			[ 87703] = true,	-- Sack of Raw Turtle Meat
-			[ 87702] = true,	-- Sack of Mushan Ribs
-			[ 87701] = true,	-- Sack of Raw Tiger Steaks
-			[ 87541] = true,	-- Crate of Vrykul Archaeology Fragments
-			[ 87540] = true,	-- Crate of Troll Archaeology Fragments
-			[ 87539] = true,	-- Crate of Tol'vir Archaeology Fragments
-			[ 87538] = true,	-- Crate of Orc Archaeology Fragments
-			[ 87537] = true,	-- Crate of Nerubian Archaeology Fragments
-			[ 87536] = true,	-- Crate of Night Elf Archaeology Fragments
-			[ 87535] = true,	-- Crate of Fossil Archaeology Fragments
-			[ 87534] = true,	-- Crate of Draenei Archaeology Fragments
-			[ 87533] = true,	-- Crate of Dwarven Archaeology Fragments
-			[ 87391] = true,	-- Plundered Treasure
-			[ 87225] = true,	-- Big Bag of Food
-			[ 87224] = true,	-- Big Bag of Wonders
-			[ 87223] = true,	-- Big Bag of Skins
-			[ 87222] = true,	-- Big Bag of Linens
-			[ 87221] = true,	-- Big Bag of Jewels
-			[ 87220] = true,	-- Big Bag of Mysteries
-			[ 87219] = true,	-- Huge Bag of Herbs
-			[ 87218] = true,	-- Big Bag of Arms
-			[ 87217] = true,	-- Small Bag of Goods
-			[ 86623] = true,	-- Blingtron 004000 Gift Package
-			[ 86595] = true,	-- Bag of Helpful Things
-			[ 86428] = true,	-- Old Man Thistle's Treasure
-			[ 85498] = true,	-- Songbell Seed Pack
-			[ 85497] = true,	-- Chirping Package
-			[ 85277] = true,	-- Nicely Packed Lunch
-			[ 85276] = true,	-- Celebration Gift
-			[ 85275] = true,	-- Chee Chee's Goodie Bag
-			[ 85274] = true,	-- Gro-Pack
-			[ 85272] = true,	-- Tree Seed Pack
-			[ 85271] = true,	-- Secret Stash
-			[ 85227] = true,	-- Special Seed Pack
-			[ 85226] = true,	-- Basic Seed Pack
-			[ 85225] = true,	-- Basic Seed Pack
-			[ 85224] = true,	-- Basic Seed Pack
-			[ 85223] = true,	-- Enigma Seed Pack
-			[ 78930] = true,	-- Sealed Crate
-			[ 77956] = true,	-- Spectral Mount Crate
-			[ 77501] = true,	-- Blue Blizzcon Bag
-			[ 72201] = true,	-- Plump Intestines
+			[98562] = true,	-- Sunreaver Bounty
+			[98560] = true,	-- Arcane Trove
+			[98133] = true,	-- Greater Cache of Treasures
+			[98103] = true,	-- Gigantic Sack of Coins
+			[98102] = true,	-- Overflowing Sack of Coins
+			[98101] = true,	-- Enormous Sack of Coins
+			[98100] = true,	-- Humongous Sack of Coins
+			[98099] = true,	-- Giant Sack of Coins
+			[98098] = true,	-- Bulging Sack of Coins
+			[98097] = true,	-- Huge Sack of Coins
+			[98096] = true,	-- Large Sack of Coins
+			[98095] = true,	-- Brawler's Pet Supplies
+			[97957] = true,	-- Surplus Supplies
+			[97956] = true,	-- Surplus Supplies
+			[97955] = true,	-- Surplus Supplies
+			[97954] = true,	-- Surplus Supplies
+			[97953] = true,	-- Surplus Supplies
+			[97952] = true,	-- Surplus Supplies
+			[97951] = true,	-- Surplus Supplies
+			[97950] = true,	-- Surplus Supplies
+			[97949] = true,	-- Surplus Supplies
+			[97948] = true,	-- Surplus Supplies
+			[97565] = true,	-- Unclaimed Black Market Container
+			[97153] = true,	-- Spoils of the Thunder King
+			[95619] = true,	-- Amber Encased Treasure Pouch
+			[95618] = true,	-- Cache of Mogu Riches
+			[95617] = true,	-- Dividends of the Everlasting Spring
+			[95602] = true,	-- Stormtouched Cache
+			[95601] = true,	-- Shiny Pile of Refuse
+			[95469] = true,	-- Serpent's Heart
+			[95343] = true,	-- Treasures of the Thunder King
+			[94566] = true,	-- Fortuitous Coffer
+			[94553] = true,	-- Notes on Lightning Steel
+			[94296] = true,	-- Cracked Primal Egg
+			[94220] = true,	-- Sunreaver Bounty
+			[94219] = true,	-- Arcane Trove
+			[94207] = true,	-- Fabled Pandaren Pet Supplies
+			[94159] = true,	-- Small Bag of Zandalari Supplies
+			[94158] = true,	-- Big Bag of Zandalari Supplies
+			[93724] = true,	-- Darkmoon Game Prize
+			[93360] = true,	-- Serpent's Cache
+			[93200] = true,	-- Tome of the Serpent
+			[93199] = true,	-- Tome of the Crane
+			[93198] = true,	-- Tome of the Tiger
+			[93149] = true,	-- Pandaren Spirit Pet Supplies
+			[93148] = true,	-- Pet Supplies
+			[93147] = true,	-- Pandaren Spirit Pet Supplies
+			[93146] = true,	-- Pandaren Spirit Pet Supplies
+			[92960] = true,	-- Silkworm Cocoon
+			[92813] = true,	-- Greater Cache of Treasures
+			[92794] = true,	-- Ride Ticket Book
+			[92793] = true,	-- Ride Ticket Book
+			[92792] = true,	-- Ride Ticket Book
+			[92791] = true,	-- Ride Ticket Book
+			[92790] = true,	-- Ride Ticket Book
+			[92789] = true,	-- Ride Ticket Book
+			[92788] = true,	-- Ride Ticket Book
+			[92744] = true,	-- Heavy Sack of Gold
+			[92718] = true,	-- Brawler's Purse
+			[91086] = true,	-- Darkmoon Pet Supplies
+			[90840] = true,	-- Marauder's Gleaming Sack of Gold
+			[90839] = true,	-- Cache of Sha-Touched Gold
+			[90818] = true,	-- Misty Satchel of Exotic Mysteries
+			[90735] = true,	-- Goodies from Nomi
+			[90635] = true,	-- Hero's Purse
+			[90634] = true,	-- Hero's Purse
+			[90633] = true,	-- Hero's Purse
+			[90632] = true,	-- Hero's Purse
+			[90631] = true,	-- Hero's Purse
+			[90630] = true,	-- Hero's Purse
+			[90629] = true,	-- Hero's Purse
+			[90628] = true,	-- Hero's Purse
+			[90627] = true,	-- Hero's Purse
+			[90626] = true,	-- Hero's Purse
+			[90625] = true,	-- Treasures of the Vale
+			[90624] = true,	-- Hero's Purse
+			[90623] = true,	-- Hero's Purse
+			[90622] = true,	-- Hero's Purse
+			[90621] = true,	-- Hero's Purse
+			[90537] = true,	-- Winner's Reward
+			[90406] = true,	-- Facets of Research
+			[90401] = true,	-- Facets of Research
+			[90400] = true,	-- Facets of Research
+			[90399] = true,	-- Facets of Research
+			[90398] = true,	-- Facets of Research
+			[90397] = true,	-- Facets of Research
+			[90395] = true,	-- Facets of Research
+			[90165] = true,	-- Golden Chest of the Lich Lord
+			[90164] = true,	-- Golden Chest of the Cycle
+			[90163] = true,	-- Golden Chest of the Howling Beast
+			[90162] = true,	-- Golden Chest of the Regal Lord
+			[90161] = true,	-- Golden Chest of the Holy Warrior
+			[90160] = true,	-- Golden Chest of the Light
+			[90159] = true,	-- Golden Chest of the Silent Assassin
+			[90158] = true,	-- Golden Chest of the Elemental Triad
+			[90157] = true,	-- Golden Chest of Windfury
+			[90156] = true,	-- Golden Chest of the Betrayer
+			[90155] = true,	-- Golden Chest of the Golden King
+			[90041] = true,	-- Spoils of Theramore
+			[89991] = true,	-- Pandaria Fireworks
+			[89858] = true,	-- Cache of Mogu Riches
+			[89857] = true,	-- Dividends of the Everlasting Spring
+			[89856] = true,	-- Amber Encased Treasure Pouch
+			[89810] = true,	-- Bounty of a Sundered Land
+			[89808] = true,	-- Dividends of the Everlasting Spring
+			[89807] = true,	-- Amber Encased Treasure Pouch
+			[89804] = true,	-- Cache of Mogu Riches
+			[89613] = true,	-- Cache of Treasures
+			[89610] = true,	-- Pandaria Herbs
+			[89609] = true,	-- Crate of Dust
+			[89608] = true,	-- Crate of Ore
+			[89607] = true,	-- Crate of Leather
+			[89428] = true,	-- Ancient Mogu Treasure
+			[89427] = true,	-- Ancient Mogu Treasure
+			[89125] = true,	-- Sack of Pet Supplies
+		--	[88567] = false,	-- Ghost Iron Lockbox
+			[88496] = true,	-- Sealed Crate
+		--	[88165] = false,	-- Vine-Cracked Junkbox
+			[87730] = true,	-- Sack of Crocolisk Belly
+			[87729] = true,	-- Sack of Golden Carp
+			[87728] = true,	-- Sack of Krasarang Paddlefish
+			[87727] = true,	-- Sack of Reef Octopus
+			[87726] = true,	-- Sack of Jewel Danio
+			[87725] = true,	-- Sack of Tiger Gourami
+			[87724] = true,	-- Sack of Redbelly Mandarin
+			[87723] = true,	-- Sack of Emperor Salmon
+			[87722] = true,	-- Sack of Giant Mantis Shrimp
+			[87721] = true,	-- Sack of Jade Lungfish
+			[87716] = true,	-- Sack of White Turnips
+			[87715] = true,	-- Sack of Pink Turnips
+			[87714] = true,	-- Sack of Striped Melons
+			[87713] = true,	-- Sack of Jade Squash
+			[87712] = true,	-- Sack of Witchberries
+			[87710] = true,	-- Sack of Red Blossom Leeks
+			[87709] = true,	-- Sack of Scallions
+			[87708] = true,	-- Sack of Mogu Pumpkins
+			[87707] = true,	-- Sack of Juicycrunch Carrots
+			[87706] = true,	-- Sack of Green Cabbages
+			[87705] = true,	-- Sack of Wildfowl Breasts
+			[87704] = true,	-- Sack of Raw Crab Meat
+			[87703] = true,	-- Sack of Raw Turtle Meat
+			[87702] = true,	-- Sack of Mushan Ribs
+			[87701] = true,	-- Sack of Raw Tiger Steaks
+			[87541] = true,	-- Crate of Vrykul Archaeology Fragments
+			[87540] = true,	-- Crate of Troll Archaeology Fragments
+			[87539] = true,	-- Crate of Tol'vir Archaeology Fragments
+			[87538] = true,	-- Crate of Orc Archaeology Fragments
+			[87537] = true,	-- Crate of Nerubian Archaeology Fragments
+			[87536] = true,	-- Crate of Night Elf Archaeology Fragments
+			[87535] = true,	-- Crate of Fossil Archaeology Fragments
+			[87534] = true,	-- Crate of Draenei Archaeology Fragments
+			[87533] = true,	-- Crate of Dwarven Archaeology Fragments
+			[87391] = true,	-- Plundered Treasure
+			[87225] = true,	-- Big Bag of Food
+			[87224] = true,	-- Big Bag of Wonders
+			[87223] = true,	-- Big Bag of Skins
+			[87222] = true,	-- Big Bag of Linens
+			[87221] = true,	-- Big Bag of Jewels
+			[87220] = true,	-- Big Bag of Mysteries
+			[87219] = true,	-- Huge Bag of Herbs
+			[87218] = true,	-- Big Bag of Arms
+			[87217] = true,	-- Small Bag of Goods
+			[86623] = true,	-- Blingtron 004000 Gift Package
+			[86595] = true,	-- Bag of Helpful Things
+			[86428] = true,	-- Old Man Thistle's Treasure
+			[85498] = true,	-- Songbell Seed Pack
+			[85497] = true,	-- Chirping Package
+			[85277] = true,	-- Nicely Packed Lunch
+			[85276] = true,	-- Celebration Gift
+			[85275] = true,	-- Chee Chee's Goodie Bag
+			[85274] = true,	-- Gro-Pack
+			[85272] = true,	-- Tree Seed Pack
+			[85271] = true,	-- Secret Stash
+			[85227] = true,	-- Special Seed Pack
+			[85226] = true,	-- Basic Seed Pack
+			[85225] = true,	-- Basic Seed Pack
+			[85224] = true,	-- Basic Seed Pack
+			[85223] = true,	-- Enigma Seed Pack
+			[78930] = true,	-- Sealed Crate
+			[77956] = true,	-- Spectral Mount Crate
+			[77501] = true,	-- Blue Blizzcon Bag
+			[72201] = true,	-- Plump Intestines
 
 --	04	WORLD OF WARCRAFT:	CATACLYSM
 
-			[ 71631] = true,	-- Zen'Vorka's Cache
-			[ 70931] = true,	-- Scrooge's Payoff
-			[ 70719] = true,	-- Water-Filled Gills
-			[ 69999] = true,	-- Moat Monster Feeding Kit
-			[ 69903] = true,	-- Satchel of Exotic Mysteries
-			[ 69886] = true,	-- Bag of Coins
-			[ 69823] = true,	-- Gub's Catch
-			[ 69822] = true,	-- Master Chef's Groceries
-			[ 69818] = true,	-- Giant Sack
-			[ 69817] = true,	-- Hive Queen's Honeycomb
-			[ 68813] = true,	-- Satchel of Freshly-Picked Herbs
-			[ 68795] = true,	-- Stendel's Bane
-		--	[ 68729] = false,	-- Elementium Lockbox
-			[ 68689] = true,	-- Imported Supplies
-			[ 68598] = true,	-- Very Fat Sack of Coins
-			[ 68384] = true,	-- Moonkin Egg
-			[ 67597] = true,	-- Sealed Crate
-			[ 67539] = true,	-- Tiny Treasure Chest
-			[ 67495] = true,	-- Strange Bloated Stomach
-			[ 67414] = true,	-- Bag of Shiny Things
-			[ 67250] = true,	-- Satchel of Helpful Goods
-			[ 67248] = true,	-- Satchel of Helpful Goods
-			[ 66943] = true,	-- Treasures from Grim Batol
-			[ 65513] = true,	-- Crate of Tasty Meat
-			[ 64657] = true,	-- Canopic Jar
-			[ 64491] = true,	-- Royal Reward
-		--	[ 63349] = false,	-- Flame-Scarred Junkbox
-			[ 62062] = true,	-- Bulging Sack of Gold
-			[ 61387] = true,	-- Hidden Stash
-			[ 60681] = true,	-- Cannary's Cache
-			[ 57540] = true,	-- Coldridge Mountaineer's Pouch
-			[ 54536] = true,	-- Satchel of Chilled Goods
+			[71631] = true,	-- Zen'Vorka's Cache
+			[70931] = true,	-- Scrooge's Payoff
+			[70719] = true,	-- Water-Filled Gills
+			[69999] = true,	-- Moat Monster Feeding Kit
+			[69903] = true,	-- Satchel of Exotic Mysteries
+			[69886] = true,	-- Bag of Coins
+			[69823] = true,	-- Gub's Catch
+			[69822] = true,	-- Master Chef's Groceries
+			[69818] = true,	-- Giant Sack
+			[69817] = true,	-- Hive Queen's Honeycomb
+			[68813] = true,	-- Satchel of Freshly-Picked Herbs
+			[68795] = true,	-- Stendel's Bane
+		--	[68729] = false,	-- Elementium Lockbox
+			[68689] = true,	-- Imported Supplies
+			[68598] = true,	-- Very Fat Sack of Coins
+			[68384] = true,	-- Moonkin Egg
+			[67597] = true,	-- Sealed Crate
+			[67539] = true,	-- Tiny Treasure Chest
+			[67495] = true,	-- Strange Bloated Stomach
+			[67414] = true,	-- Bag of Shiny Things
+			[67250] = true,	-- Satchel of Helpful Goods
+			[67248] = true,	-- Satchel of Helpful Goods
+			[66943] = true,	-- Treasures from Grim Batol
+			[65513] = true,	-- Crate of Tasty Meat
+			[64657] = true,	-- Canopic Jar
+			[64491] = true,	-- Royal Reward
+		--	[63349] = false,	-- Flame-Scarred Junkbox
+			[62062] = true,	-- Bulging Sack of Gold
+			[61387] = true,	-- Hidden Stash
+			[60681] = true,	-- Cannary's Cache
+			[57540] = true,	-- Coldridge Mountaineer's Pouch
+			[54536] = true,	-- Satchel of Chilled Goods
 
 --	XX	WORLD OF WARCRAFT:	EVENTS CLASSIC
 
 	--	Love is in the Air		Valentines Event
 		--	Quests & Dailies
-			[ 54537] = true,	-- Heart-Shaped Box
-			[ 50161] = true,	-- Dinner Suit Box
-			[ 50160] = true,	-- Lovely Dress Box
+			[54537] = true,	-- Heart-Shaped Box
+			[50161] = true,	-- Dinner Suit Box
+			[50160] = true,	-- Lovely Dress Box
 
 	--	Noblegarden				Easter Event
 		--	Quests & Dailies
-			[ 45072] = true,	-- Brightly Colored Egg		
+			[45072] = true,	-- Brightly Colored Egg		
 
 	--	Winter Veil				Crhistmas Event
 		--	Quests & Dailies
-			[ 21315] = true, 	-- Smokywood Satchel
-			[ 21216] = true, 	-- Smokywood Pastures Extra-Special Gift
-			[ 17727] = true, 	-- Smokywood Pastures Gift Pack
-			[ 17726] = true, 	-- Smokywood Pastures Special Gift
-			[ 17685] = true, 	-- Smokywood Pastures Sampler
+			[21315] = true, 	-- Smokywood Satchel
+			[21216] = true, 	-- Smokywood Pastures Extra-Special Gift
+			[17727] = true, 	-- Smokywood Pastures Gift Pack
+			[17726] = true, 	-- Smokywood Pastures Special Gift
+			[17685] = true, 	-- Smokywood Pastures Sampler
 		--	Tree Gifts
-			[ 46740] = true,	-- Winter Veil Gift
-			[ 43504] = true,	-- Winter Veil Gift
-			[ 34426] = true,	-- Winter Veil Gift
-			[ 21363] = true,	-- Festive Gift
-			[ 21327] = true,	-- Ticking Present
-			[ 21310] = true,	-- Gaily Wrapped Present
-			[ 21271] = true,	-- Gently Shaken Gift
-			[ 21270] = true,	-- Gently Shaken Gift
-			[ 21191] = true,	-- Carefully Wrapped Present
+			[46740] = true,	-- Winter Veil Gift
+			[43504] = true,	-- Winter Veil Gift
+			[34426] = true,	-- Winter Veil Gift
+			[21363] = true,	-- Festive Gift
+			[21327] = true,	-- Ticking Present
+			[21310] = true,	-- Gaily Wrapped Present
+			[21271] = true,	-- Gently Shaken Gift
+			[21270] = true,	-- Gently Shaken Gift
+			[21191] = true,	-- Carefully Wrapped Present
 		
 --	03	WORLD OF WARCRAFT:	WRATH OF THE LICH KING
 
@@ -1328,77 +1330,77 @@ local autoOpenItems = {
 			[200239] = true,	-- Northrend Adventuring Supplies
 			[200238] = true,	-- Northrend Adventuring Supplies
 			[199210] = true,	-- Northrend Adventuring Supplies
-			[ 54516] = true,	-- Loot-Filled Pumpkin
-			[ 54467] = true,	-- Tabard Lost & Found
-			[ 52676] = true,	-- Cache of the Ley-Guardian
-			[ 52344] = true,	-- Earthen Ring Supplies
-			[ 52304] = true,	-- Fire Prism
-			[ 52274] = true,	-- Earthen Ring Supplies
-			[ 52006] = true,	-- Sack of Frosty Treasures
-			[ 52005] = true,	-- Satchel of Helpful Goods
-			[ 52004] = true,	-- Satchel of Helpful Goods
-			[ 52003] = true,	-- Satchel of Helpful Goods
-			[ 52002] = true,	-- Satchel of Helpful Goods
-			[ 52001] = true,	-- Satchel of Helpful Goods
-			[ 52000] = true,	-- Satchel of Helpful Goods
-			[ 51999] = true,	-- Satchel of Helpful Goods
-			[ 51316] = true,	-- Unsealed Chest
-			[ 50409] = true,	-- Spark's Fossil Finding Kit
-			[ 50301] = true,	-- Landro's Pet Box
-			[ 50238] = true,	-- Cracked Un'Goro Coconut
-			[ 49926] = true,	-- Brazie's Black Book of Secrets
-			[ 49909] = true,	-- Box of Chocolates
-			[ 49631] = true,	-- Standard Apothecary Serving Kit
-			[ 49369] = true,	-- Red Blizzcon Bag
-			[ 49294] = true,	-- Ashen Sack of Gems
-			[ 46812] = true,	-- Northrend Mystery Gem Pouch
-			[ 46810] = true,	-- Bountiful Cookbook
-			[ 46809] = true,	-- Bountiful Cookbook
-		--	[ 46110] = false,	-- Alchemist's Cache -- Alchemist only
-			[ 46007] = true,	-- Bag of Fishing Treasures
-		--	[ 45986] = false,	-- Tiny Titanium Lockbox
-		--	[ 45878] = true,	-- Large Sack of Ulduar Spoils (Drops from Raid Boss)
-		--	[ 45875] = true,	-- Sack of Ulduar Spoils (Drops from Raid Boss)
-			[ 45724] = true,	-- Champion's Purse
-			[ 45328] = true,	-- Bloated Slippery Eel
-			[ 44951] = true,	-- Box of Bombs
-			[ 44943] = true,	-- Icy Prism
-			[ 44751] = true,	-- Hyldnir Spoils
-			[ 44718] = true,	-- Ripe Disgusting Jar
-		--	[ 44700] = true,	-- Brooding Darkwater Clam
-			[ 44663] = true,	-- Abandoned Adventurer's Satchel
-			[ 44475] = true,	-- Reinforced Crate
-			[ 44163] = true,	-- Shadowy Tarot
-			[ 44161] = true,	-- Arcane Tarot
-			[ 44142] = true,	-- Strange Tarot
-			[ 44113] = true,	-- Small Spice Bag
-		--	[ 43624] = false,	-- Titanium Lockbox
-		--	[ 43622] = false,	-- Froststeel Lockbox
-		--	[ 43575] = false,	-- Reinforced Junkbox
-			[ 43556] = true,	-- Patroller's Pack
-			[ 43347] = true,	-- Satchel of Spoils
-		--	[ 43346] = true,	-- Large Satchel of Spoils (Drops from Raid Boss)
-			[ 41888] = true,	-- Small Velvet Bag
-			[ 41426] = true,	-- Magically Wrapped Gift
-			[ 40308] = true,	-- Bonework Soul Jar
-			[ 39904] = true,	-- Argent Crusade Gratuity
-			[ 39903] = true,	-- Argent Crusade Gratuity
-			[ 39883] = true,	-- Cracked Egg
-			[ 39418] = true,	-- Ornately Jeweled Box
-			[ 38539] = true,	-- Sack of Gold
-			[ 37605] = true,	-- Pouch of Pennies
-			[ 37586] = true,	-- Handful of Treats
-			[ 37168] = true,	-- Mysterious Tarot
-			[ 36781] = true,	-- Darkwater Clam
-			[ 35945] = true,	-- Brilliant Glass
-			[ 35792] = true,	-- Mage Hunter Personal Effects
-			[ 35745] = true,	-- Box of Treasure
-			[ 35512] = true,	-- Pocket Full of Snow
-			[ 35348] = true,	-- Bag of Fishing Treasures
-			[ 35313] = true,	-- Bloated Barbed Gill Trout
-			[ 35286] = true,	-- Bloated Giant Sunfish
-			[ 35232] = true,	-- Shattered Sun Supplies
-			[ 34871] = true,	-- Crafty's Sack
+			[54516] = true,	-- Loot-Filled Pumpkin
+			[54467] = true,	-- Tabard Lost & Found
+			[52676] = true,	-- Cache of the Ley-Guardian
+			[52344] = true,	-- Earthen Ring Supplies
+			[52304] = true,	-- Fire Prism
+			[52274] = true,	-- Earthen Ring Supplies
+			[52006] = true,	-- Sack of Frosty Treasures
+			[52005] = true,	-- Satchel of Helpful Goods
+			[52004] = true,	-- Satchel of Helpful Goods
+			[52003] = true,	-- Satchel of Helpful Goods
+			[52002] = true,	-- Satchel of Helpful Goods
+			[52001] = true,	-- Satchel of Helpful Goods
+			[52000] = true,	-- Satchel of Helpful Goods
+			[51999] = true,	-- Satchel of Helpful Goods
+			[51316] = true,	-- Unsealed Chest
+			[50409] = true,	-- Spark's Fossil Finding Kit
+			[50301] = true,	-- Landro's Pet Box
+			[50238] = true,	-- Cracked Un'Goro Coconut
+			[49926] = true,	-- Brazie's Black Book of Secrets
+			[49909] = true,	-- Box of Chocolates
+			[49631] = true,	-- Standard Apothecary Serving Kit
+			[49369] = true,	-- Red Blizzcon Bag
+			[49294] = true,	-- Ashen Sack of Gems
+			[46812] = true,	-- Northrend Mystery Gem Pouch
+			[46810] = true,	-- Bountiful Cookbook
+			[46809] = true,	-- Bountiful Cookbook
+		--	[46110] = false,	-- Alchemist's Cache -- Alchemist only
+			[46007] = true,	-- Bag of Fishing Treasures
+		--	[45986] = false,	-- Tiny Titanium Lockbox
+		--	[45878] = true,	-- Large Sack of Ulduar Spoils (Drops from Raid Boss)
+		--	[45875] = true,	-- Sack of Ulduar Spoils (Drops from Raid Boss)
+			[45724] = true,	-- Champion's Purse
+			[45328] = true,	-- Bloated Slippery Eel
+			[44951] = true,	-- Box of Bombs
+			[44943] = true,	-- Icy Prism
+			[44751] = true,	-- Hyldnir Spoils
+			[44718] = true,	-- Ripe Disgusting Jar
+		--	[44700] = true,	-- Brooding Darkwater Clam
+			[44663] = true,	-- Abandoned Adventurer's Satchel
+			[44475] = true,	-- Reinforced Crate
+			[44163] = true,	-- Shadowy Tarot
+			[44161] = true,	-- Arcane Tarot
+			[44142] = true,	-- Strange Tarot
+			[44113] = true,	-- Small Spice Bag
+		--	[43624] = false,	-- Titanium Lockbox
+		--	[43622] = false,	-- Froststeel Lockbox
+		--	[43575] = false,	-- Reinforced Junkbox
+			[43556] = true,	-- Patroller's Pack
+			[43347] = true,	-- Satchel of Spoils
+		--	[43346] = true,	-- Large Satchel of Spoils (Drops from Raid Boss)
+			[41888] = true,	-- Small Velvet Bag
+			[41426] = true,	-- Magically Wrapped Gift
+			[40308] = true,	-- Bonework Soul Jar
+			[39904] = true,	-- Argent Crusade Gratuity
+			[39903] = true,	-- Argent Crusade Gratuity
+			[39883] = true,	-- Cracked Egg
+			[39418] = true,	-- Ornately Jeweled Box
+			[38539] = true,	-- Sack of Gold
+			[37605] = true,	-- Pouch of Pennies
+			[37586] = true,	-- Handful of Treats
+			[37168] = true,	-- Mysterious Tarot
+			[36781] = true,	-- Darkwater Clam
+			[35945] = true,	-- Brilliant Glass
+			[35792] = true,	-- Mage Hunter Personal Effects
+			[35745] = true,	-- Box of Treasure
+			[35512] = true,	-- Pocket Full of Snow
+			[35348] = true,	-- Bag of Fishing Treasures
+			[35313] = true,	-- Bloated Barbed Gill Trout
+			[35286] = true,	-- Bloated Giant Sunfish
+			[35232] = true,	-- Shattered Sun Supplies
+			[34871] = true,	-- Crafty's Sack
 
 --	02	WORLD OF WARCRAFT:	BURNING CRUSADE
 
@@ -1406,323 +1408,369 @@ local autoOpenItems = {
 		--	[191060] = true,	-- Black Sack of Gems (Drops from Raid Boss)
 			[187799] = true,	-- Enlistment Bonus
 			[187714] = true,	-- Enlistment Bonus
-			[ 34863] = true,	-- Bag of Fishing Treasures
-		--	[ 34846] = true,	-- Black Sack of Gems (Drops from Raid Boss)
-			[ 34595] = true,	-- Aldor Supplies Package
-			[ 34594] = true,	-- Scryer Supplies Package
-			[ 34593] = true,	-- Scryer Supplies Package
-			[ 34592] = true,	-- Aldor Supplies Package
-			[ 34587] = true,	-- Aldor Supplies Package
-			[ 34585] = true,	-- Scryer Supplies Package
-			[ 34584] = true,	-- Scryer Supplies Package
-			[ 34583] = true,	-- Aldor Supplies Package
-			[ 34548] = true,	-- Cache of the Shattered Sun
-			[ 34503] = true,	-- Box of Adamantite Shells
-			[ 34119] = true,	-- Black Conrad's Treasure
-			[ 34077] = true,	-- Crudely Wrapped Gift
-			[ 33928] = true,	-- Hollowed Bone Decanter
-			[ 33926] = true,	-- Sealed Scroll Case
-			[ 33857] = true,	-- Crate of Meat
-			[ 33844] = true,	-- Barrel of Fish
-			[ 33045] = true,	-- Renn's Supplies
-			[ 32835] = true,	-- Ogri'la Care Package
-			[ 32777] = true,	-- Kronk's Grab Bag
-			[ 32724] = true,	-- Sludge-Covered Object
-			[ 32631] = true,	-- Small Silver Metamorphosis Geode
-			[ 32630] = true,	-- Small Gold Metamorphosis Geode
-			[ 32629] = true,	-- Large Gold Metamorphosis Geode
-			[ 32628] = true,	-- Large Silver Metamorphosis Geode
-			[ 32627] = true,	-- Small Copper Metamorphosis Geode
-			[ 32626] = true,	-- Large Copper Metamorphosis Geode
-			[ 32625] = true,	-- Small Iron Metamorphosis Geode
-			[ 32624] = true,	-- Large Iron Metamorphosis Geode 
-			[ 32561] = true,	-- Tier 5 Arrow Box
-			[ 32462] = true,	-- Morthis' Materials
-			[ 32064] = true,	-- Protectorate Treasure Cache
-			[ 31955] = true,	-- Arelion's Knapsack
-		--	[ 31952] = false,	-- Khorium Lockbox
-			[ 31800] = true,	-- Outcast's Cache
-			[ 31522] = true,	-- Primal Mooncloth Supplies
-			[ 31408] = true,	-- Offering of the Sha'tar
-			[ 30650] = true,	-- Dertrok's Wand Case
-			[ 30320] = true,	-- Bundle of Nether Spikes
-			[ 30260] = true,	-- Voren'thal's Package
-		--	[ 29569] = false,	-- Strong Junkbox
-			[ 28499] = true,	-- Arakkoa Hunter's Supplies
-			[ 28135] = true,	-- Bomb Crate
-		--	[ 27513] = false,	-- Curious Crate
-			[ 27511] = true,	-- Inscribed Scrollcase
-			[ 27481] = false,	-- Heavy Supply Crate
-			[ 27446] = true,	-- Mr. Pinchy's Gift
-			[ 25424] = true,	-- Gem-Stuffed Envelope
-			[ 25423] = true,	-- Bag of Premium Gems
-			[ 25422] = true,	-- Bulging Sack of Gems
-			[ 25419] = true,	-- Unmarked Bag of Gems
-		--	[ 24476] = false,	-- Jaggal Clam
-			[ 24402] = true,	-- Package of Identified Plants
-			[ 24336] = true,	-- Fireproof Satchel
-			[ 23921] = true,	-- Bulging Sack of Silver
-			[ 23895] = true,	-- Netted Goods
-			[ 23846] = true,	-- Nolkai's Box
+			[34863] = true,	-- Bag of Fishing Treasures
+		--	[34846] = true,	-- Black Sack of Gems (Drops from Raid Boss)
+			[34595] = true,	-- Aldor Supplies Package
+			[34594] = true,	-- Scryer Supplies Package
+			[34593] = true,	-- Scryer Supplies Package
+			[34592] = true,	-- Aldor Supplies Package
+			[34587] = true,	-- Aldor Supplies Package
+			[34585] = true,	-- Scryer Supplies Package
+			[34584] = true,	-- Scryer Supplies Package
+			[34583] = true,	-- Aldor Supplies Package
+			[34548] = true,	-- Cache of the Shattered Sun
+			[34503] = true,	-- Box of Adamantite Shells
+			[34119] = true,	-- Black Conrad's Treasure
+			[34077] = true,	-- Crudely Wrapped Gift
+			[33928] = true,	-- Hollowed Bone Decanter
+			[33926] = true,	-- Sealed Scroll Case
+			[33857] = true,	-- Crate of Meat
+			[33844] = true,	-- Barrel of Fish
+			[33045] = true,	-- Renn's Supplies
+			[32835] = true,	-- Ogri'la Care Package
+			[32777] = true,	-- Kronk's Grab Bag
+			[32724] = true,	-- Sludge-Covered Object
+			[32631] = true,	-- Small Silver Metamorphosis Geode
+			[32630] = true,	-- Small Gold Metamorphosis Geode
+			[32629] = true,	-- Large Gold Metamorphosis Geode
+			[32628] = true,	-- Large Silver Metamorphosis Geode
+			[32627] = true,	-- Small Copper Metamorphosis Geode
+			[32626] = true,	-- Large Copper Metamorphosis Geode
+			[32625] = true,	-- Small Iron Metamorphosis Geode
+			[32624] = true,	-- Large Iron Metamorphosis Geode 
+			[32561] = true,	-- Tier 5 Arrow Box
+			[32462] = true,	-- Morthis' Materials
+			[32064] = true,	-- Protectorate Treasure Cache
+			[31955] = true,	-- Arelion's Knapsack
+		--	[31952] = false,	-- Khorium Lockbox
+			[31800] = true,	-- Outcast's Cache
+			[31522] = true,	-- Primal Mooncloth Supplies
+			[31408] = true,	-- Offering of the Sha'tar
+			[30650] = true,	-- Dertrok's Wand Case
+			[30320] = true,	-- Bundle of Nether Spikes
+			[30260] = true,	-- Voren'thal's Package
+		--	[29569] = false,	-- Strong Junkbox
+			[28499] = true,	-- Arakkoa Hunter's Supplies
+			[28135] = true,	-- Bomb Crate
+		--	[27513] = false,	-- Curious Crate
+			[27511] = true,	-- Inscribed Scrollcase
+			[27481] = false,	-- Heavy Supply Crate
+			[27446] = true,	-- Mr. Pinchy's Gift
+			[25424] = true,	-- Gem-Stuffed Envelope
+			[25423] = true,	-- Bag of Premium Gems
+			[25422] = true,	-- Bulging Sack of Gems
+			[25419] = true,	-- Unmarked Bag of Gems
+		--	[24476] = false,	-- Jaggal Clam
+			[24402] = true,	-- Package of Identified Plants
+			[24336] = true,	-- Fireproof Satchel
+			[23921] = true,	-- Bulging Sack of Silver
+			[23895] = true,	-- Netted Goods
+			[23846] = true,	-- Nolkai's Box
 
 --	01	WORLD OF WARCRAFT
 
-			[ 23224] = true,	-- Summer Gift Package
-			[ 23022] = true,	-- Curmudgeon's Payoff
-			[ 22746] = true,	-- Buccaneer's Uniform
-			[ 22650] = true,	-- Hive'Zora Dossier
-			[ 22649] = true,	-- Hive'Regal Dossier
-			[ 22648] = true,	-- Hive'Ashi Dossier
-			[ 22568] = true,	-- Sealed Craftsman's Writ
-			[ 22320] = true,	-- Mux's Quality Goods
-			[ 22178] = true,	-- Pledge of Friendship: Stormwind
-			[ 22172] = true,	-- Gift of Friendship: Undercity
-			[ 22171] = true,	-- Gift of Friendship: Thunder Bluff
-			[ 22170] = true,	-- Gift of Friendship: Stormwind
-			[ 22169] = true,	-- Gift of Friendship: Orgrimmar
-			[ 22168] = true,	-- Gift of Friendship: Ironforge
-			[ 22167] = true,	-- Gift of Friendship: Darnassus
-			[ 22166] = true,	-- Gift of Adoration: Undercity
-			[ 22165] = true,	-- Gift of Adoration: Thunder Bluff
-			[ 22164] = true,	-- Gift of Adoration: Orgrimmar
-			[ 22163] = true,	-- Pledge of Friendship: Undercity
-			[ 22162] = true,	-- Pledge of Friendship: Thunder Bluff
-			[ 22161] = true,	-- Pledge of Friendship: Orgrimmar
-			[ 22160] = true,	-- Pledge of Friendship: Ironforge
-			[ 22159] = true,	-- Pledge of Friendship: Darnassus
-			[ 22158] = true,	-- Pledge of Adoration: Thunder Bluff
-			[ 22157] = true,	-- Pledge of Adoration: Undercity
-			[ 22156] = true,	-- Pledge of Adoration: Orgrimmar
-			[ 22155] = true,	-- Pledge of Adoration: Darnassus
-			[ 22154] = true,	-- Pledge of Adoration: Ironforge
-			[ 22152] = true,	-- Anthion's Pouch
-			[ 22137] = true,	-- Ysida's Satchel
-			[ 21981] = true,	-- Gift of Adoration: Stormwind
-			[ 21980] = true,	-- Gift of Adoration: Ironforge
-			[ 21979] = true,	-- Gift of Adoration: Darnassus
-			[ 21975] = true,	-- Pledge of Adoration: Stormwind
-			[ 21812] = true,	-- Box of Chocolates
-			[ 21746] = true,	-- Lucky Red Envelope
-		--	[ 21743] = false,	-- Large Cluster Rocket Recipes
-		--	[ 21742] = false,	-- Large Rocket Recipes
-		--	[ 21741] = false,	-- Cluster Rocket Recipes
-		--	[ 21740] = false,	-- Small Rocket Recipes
-			[ 21640] = true,	-- Lunar Festival Fireworks Pack
-			[ 21528] = true,	-- Colossal Bag of Loot
-			[ 21513] = true,	-- Ahn'Qiraj War Effort Supplies
-			[ 21512] = true,	-- Ahn'Qiraj War Effort Supplies
-			[ 21511] = true,	-- Ahn'Qiraj War Effort Supplies
-			[ 21510] = true,	-- Ahn'Qiraj War Effort Supplies
-			[ 21509] = true,	-- Ahn'Qiraj War Effort Supplies
-			[ 21386] = true,	-- Followup Logistics Assignment
-			[ 21266] = true,	-- Logistics Assignment
-			[ 21243] = true,	-- Bloated Mightfish
-			[ 21228] = false,	-- Mithril Bound Trunk
-			[ 21164] = true,	-- Bloated Rockscale Cod
-			[ 21163] = true,	-- Bloated Firefin
-			[ 21162] = true,	-- Bloated Oily Blackmouth
-			[ 21156] = true,	-- Scarab Bag
-			[ 21150] = false,	-- Iron Bound Trunk
-			[ 21133] = true,	-- Followup Tactical Assignment
-			[ 21132] = true,	-- Logistics Assignment
-			[ 21131] = true,	-- Followup Combat Assignment
-			[ 21113] = false,	-- Watertight Trunk
-			[ 21042] = true,	-- Narain's Special Kit
-			[ 20809] = true,	-- Tactical Assignment
-			[ 20808] = true,	-- Combat Assignment
-			[ 20805] = true,	-- Followup Logistics Assignment
-			[ 20768] = true,	-- Oozing Bag
-			[ 20767] = true,	-- Scum Covered Bag
-			[ 20766] = true,	-- Slimy Bag
-			[ 20708] = false,	-- Tightly Sealed Trunk
-			[ 20603] = true,	-- Bag of Spoils
-			[ 20602] = true,	-- Chest of Spoils
-			[ 20601] = true,	-- Sack of Spoils
-			[ 20469] = true,	-- Decoded True Believer Clippings
-			[ 20393] = true,	-- Treat Bag
-			[ 20367] = true,	-- Hunting Gear
-			[ 20236] = true,	-- Arathor Standard Care Package
-			[ 20233] = true,	-- Arathor Basic Care Package
-			[ 20231] = true,	-- Arathor Advanced Care Package
-			[ 20230] = true,	-- Defiler's Standard Care Package
-			[ 20229] = true,	-- Defiler's Basic Care Package
-			[ 20228] = true,	-- Defiler's Advanced Care Package
-		--	[ 19425] = false,	-- Mysterious Lockbox
-			[ 19422] = true,	-- Darkmoon Faire Fortune
-			[ 19298] = true,	-- Minor Darkmoon Prize
-			[ 19297] = true,	-- Lesser Darkmoon Prize
-			[ 19296] = true,	-- Greater Darkmoon Prize
-			[ 19155] = true,	-- Outrider Standard Care Package
-			[ 19154] = true,	-- Outrider Basic Care Package
-			[ 19153] = true,	-- Outrider Advanced Care Package
-			[ 19152] = true,	-- Sentinel Advanced Care Package
-			[ 19151] = true,	-- Sentinel Standard Care Package
-			[ 19150] = true,	-- Sentinel Basic Care Package
-			[ 19035] = true,	-- Lard's Special Picnic Basket
-			[ 18804] = true,	-- Lord Grayson's Satchel
-			[ 18636] = true,	-- Ruined Jumper Cables XL
-			[ 17969] = true,	-- Red Sack of Gems
-			[ 17965] = true,	-- Yellow Sack of Gems
-			[ 17964] = true,	-- Gray Sack of Gems
-			[ 17963] = true,	-- Green Sack of Gems
-			[ 17962] = true,	-- Blue Sack of Gems
-		--	[ 16885] = false,	-- Heavy Junkbox
-		--	[ 16884] = false,	-- Sturdy Junkbox
-		--	[ 16883] = false,	-- Worn Junkbox
-		--	[ 16882] = false,	-- Battered Junkbox
-			[ 16783] = true,	-- Bundle of Reports
-			[ 15902] = true,	-- A Crazy Grab Bag
-			[ 15876] = true,	-- Nathanos' Chest
-		--	[ 15874] = false,	-- Soft-shelled Clam
-			[ 15699] = true,	-- Small Brown-Wrapped Package
-			[ 15103] = true,	-- Corrupt Tested Sample
-			[ 15102] = true,	-- Un'Goro Tested Sample
-		--	[ 13918] = false,	-- Reinforced Locked Chest
-			[ 13891] = true,	-- Bloated Salmon
-			[ 13881] = true,	-- Bloated Redgill
-		--	[ 13875] = false,	-- Ironbound Locked Chest
-			[ 13874] = true,	-- Heavy Crate
-			[ 13247] = true,	-- Quartermaster Zigris' Footlocker	Not [22233]
-			[ 12849] = true,	-- Demon Kissed Sack
-			[ 12339] = true,	-- Vaelan's Gift
-			[ 12122] = true,	-- Kum'isha's Junk
-		--	[ 12033] = false,	-- Thaurissan Family Jewels
-			[ 11966] = true,	-- Small Sack of Coins
-			[ 11955] = true,	-- Bag of Empty Ooze Containers
-			[ 11938] = true,	-- Sack of Gems
-			[ 11937] = true,	-- Fat Sack of Coins
-			[ 11912] = true,	-- Package of Empty Ooze Containers
-			[ 11887] = true,	-- Cenarion Circle Cache
-			[ 11883] = true,	-- A Dingy Fanny Pack
-			[ 11617] = true,	-- Eridan's Supplies
-			[ 11568] = true,	-- Torwa's Pouch
-			[ 11423] = true,	-- Gnome Engineer's Renewal Gift
-			[ 11422] = true,	-- Goblin Engineer's Renewal Gift
-			[ 11107] = true,	-- A Small Pack
-			[ 11024] = true,	-- Evergreen Herb Casing
-			[ 10834] = true,	-- Felhound Tracker Kit
-			[ 10773] = true,	-- Hakkari Urn
-			[ 10752] = true,	-- Emerald Encrusted Chest
-			[ 10695] = true,	-- Box of Empty Vials
-			[ 10595] = true,	-- Kum'isha's Junk
-			[ 10569] = true,	-- Hoard of the Black Dragonflight
-			[ 10479] = true,	-- Kovic's Trading Satchel
-			[ 10456] = true,	-- A Bulging Coin Purse
-			[  9541] = true,	-- Box of Goodies
-			[  9540] = true,	-- Box of Spells
-			[  9539] = true,	-- Box of Rations
-			[  9537] = true,	-- Neatly Wrapped Box
-			[  9532] = true,	-- Internal Warrior Equipment Kit L30
-			[  9529] = true,	-- Internal Warrior Equipment Kit L25
-			[  9363] = true,	-- Sparklematic-Wrapped Box
-			[  9276] = true,	-- Pirate's Footlocker
-			[  9265] = true,	-- Cuergo's Hidden Treasure
-			[  8647] = true,	-- Egg Crate
-			[  8507] = true,	-- Heavy Mithril Lotterybox
-			[  8506] = true,	-- Mithril Lotterybox
-			[  8505] = true,	-- Heavy Iron Lotterybox
-			[  8504] = true,	-- Iron Lotterybox
-			[  8503] = true,	-- Heavy Bronze Lotterybox
-			[  8502] = true,	-- Bronze Lotterybox
-			[  8484] = true,	-- Gadgetzan Water Co. Care Package
-			[  8366] = true,	-- Bloated Trout
-			[  8049] = true,	-- Gnarlpine Necklace
-		--	[  7973] = false,	-- Big-Mouth Clams
-		--	[  7870] = false,	-- Thaumaturgy Vessel Lockbox
-		--	[  7209] = false,	-- Tazan's Satchel
-			[  7190] = true,	-- Scorched Rocket Boots
-			[  6827] = true,	-- Box of Supplies
-			[  6755] = true,	-- A Small Container of Gems
-			[  6715] = true,	-- Ruined Jumper Cables
-			[  6647] = true,	-- Bloated Catfish
-			[  6646] = true,	-- Bloated Albacore
-			[  6645] = true,	-- Bloated Mud Snapper
-			[  6644] = true,	-- Bloated Mackerel
-			[  6643] = true,	-- Bloated Smallfish
-			[  6357] = true,	-- Sealed Crate
-			[  6356] = true,	-- Battered Chest
-		--	[  6355] = false,	-- Sturdy Locked Chest
-		--	[  6354] = false,	-- Small Locked Chest 
-			[  6353] = true,	-- Small Chest
-			[  6352] = true,	-- Waterlogged Crate
-			[  6351] = true,	-- Dented Crate
-			[  6307] = true,	-- Message in a Bottle
-			[  5858] = true,	-- Goblin Prize Box
-			[  5857] = true,	-- Gnome Prize Box
-		--	[  5760] = false,	-- Eternium Lockbox
-		--	[  5759] = false,	-- Thorium Lockbox
-		--	[  5758] = false,	-- Mithril Lockbox
-			[  5738] = true,	-- Covert Ops Pack
-		--	[  5524] = false,	-- Thick-shelled Clam
-		--	[  5523] = false,	-- Small Barnacled Clam
-			[  5335] = true,	-- A Sack of Coins
-		--	[  4638] = false,	-- Reinforced Steel Lockbox
-		--	[  4637] = false,	-- Steel Lockbox
-		--	[  4636] = false,	-- Strong Iron Lockbox
-		--	[  4634] = false,	-- Iron Lockbox
-		--	[  4633] = false,	-- Heavy Bronze Lockbox
-		--	[  4632] = false,	-- Ornate Bronze Lockbox
-}
-
-local autoOpenItemsSalvage = {
+			[23224] = true,	-- Summer Gift Package
+			[23022] = true,	-- Curmudgeon's Payoff
+			[22746] = true,	-- Buccaneer's Uniform
+			[22650] = true,	-- Hive'Zora Dossier
+			[22649] = true,	-- Hive'Regal Dossier
+			[22648] = true,	-- Hive'Ashi Dossier
+			[22568] = true,	-- Sealed Craftsman's Writ
+			[22320] = true,	-- Mux's Quality Goods
+			[22178] = true,	-- Pledge of Friendship: Stormwind
+			[22172] = true,	-- Gift of Friendship: Undercity
+			[22171] = true,	-- Gift of Friendship: Thunder Bluff
+			[22170] = true,	-- Gift of Friendship: Stormwind
+			[22169] = true,	-- Gift of Friendship: Orgrimmar
+			[22168] = true,	-- Gift of Friendship: Ironforge
+			[22167] = true,	-- Gift of Friendship: Darnassus
+			[22166] = true,	-- Gift of Adoration: Undercity
+			[22165] = true,	-- Gift of Adoration: Thunder Bluff
+			[22164] = true,	-- Gift of Adoration: Orgrimmar
+			[22163] = true,	-- Pledge of Friendship: Undercity
+			[22162] = true,	-- Pledge of Friendship: Thunder Bluff
+			[22161] = true,	-- Pledge of Friendship: Orgrimmar
+			[22160] = true,	-- Pledge of Friendship: Ironforge
+			[22159] = true,	-- Pledge of Friendship: Darnassus
+			[22158] = true,	-- Pledge of Adoration: Thunder Bluff
+			[22157] = true,	-- Pledge of Adoration: Undercity
+			[22156] = true,	-- Pledge of Adoration: Orgrimmar
+			[22155] = true,	-- Pledge of Adoration: Darnassus
+			[22154] = true,	-- Pledge of Adoration: Ironforge
+			[22152] = true,	-- Anthion's Pouch
+			[22137] = true,	-- Ysida's Satchel
+			[21981] = true,	-- Gift of Adoration: Stormwind
+			[21980] = true,	-- Gift of Adoration: Ironforge
+			[21979] = true,	-- Gift of Adoration: Darnassus
+			[21975] = true,	-- Pledge of Adoration: Stormwind
+			[21812] = true,	-- Box of Chocolates
+			[21746] = true,	-- Lucky Red Envelope
+		--	[21743] = false,	-- Large Cluster Rocket Recipes
+		--	[21742] = false,	-- Large Rocket Recipes
+		--	[21741] = false,	-- Cluster Rocket Recipes
+		--	[21740] = false,	-- Small Rocket Recipes
+			[21640] = true,	-- Lunar Festival Fireworks Pack
+			[21528] = true,	-- Colossal Bag of Loot
+			[21513] = true,	-- Ahn'Qiraj War Effort Supplies
+			[21512] = true,	-- Ahn'Qiraj War Effort Supplies
+			[21511] = true,	-- Ahn'Qiraj War Effort Supplies
+			[21510] = true,	-- Ahn'Qiraj War Effort Supplies
+			[21509] = true,	-- Ahn'Qiraj War Effort Supplies
+			[21386] = true,	-- Followup Logistics Assignment
+			[21266] = true,	-- Logistics Assignment
+			[21243] = true,	-- Bloated Mightfish
+			[21228] = false,	-- Mithril Bound Trunk
+			[21164] = true,	-- Bloated Rockscale Cod
+			[21163] = true,	-- Bloated Firefin
+			[21162] = true,	-- Bloated Oily Blackmouth
+			[21156] = true,	-- Scarab Bag
+			[21150] = false,	-- Iron Bound Trunk
+			[21133] = true,	-- Followup Tactical Assignment
+			[21132] = true,	-- Logistics Assignment
+			[21131] = true,	-- Followup Combat Assignment
+			[21113] = false,	-- Watertight Trunk
+			[21042] = true,	-- Narain's Special Kit
+			[20809] = true,	-- Tactical Assignment
+			[20808] = true,	-- Combat Assignment
+			[20805] = true,	-- Followup Logistics Assignment
+			[20768] = true,	-- Oozing Bag
+			[20767] = true,	-- Scum Covered Bag
+			[20766] = true,	-- Slimy Bag
+			[20708] = false,	-- Tightly Sealed Trunk
+			[20603] = true,	-- Bag of Spoils
+			[20602] = true,	-- Chest of Spoils
+			[20601] = true,	-- Sack of Spoils
+			[20469] = true,	-- Decoded True Believer Clippings
+			[20393] = true,	-- Treat Bag
+			[20367] = true,	-- Hunting Gear
+			[20236] = true,	-- Arathor Standard Care Package
+			[20233] = true,	-- Arathor Basic Care Package
+			[20231] = true,	-- Arathor Advanced Care Package
+			[20230] = true,	-- Defiler's Standard Care Package
+			[20229] = true,	-- Defiler's Basic Care Package
+			[20228] = true,	-- Defiler's Advanced Care Package
+		--	[19425] = false,	-- Mysterious Lockbox
+			[19422] = true,	-- Darkmoon Faire Fortune
+			[19298] = true,	-- Minor Darkmoon Prize
+			[19297] = true,	-- Lesser Darkmoon Prize
+			[19296] = true,	-- Greater Darkmoon Prize
+			[19155] = true,	-- Outrider Standard Care Package
+			[19154] = true,	-- Outrider Basic Care Package
+			[19153] = true,	-- Outrider Advanced Care Package
+			[19152] = true,	-- Sentinel Advanced Care Package
+			[19151] = true,	-- Sentinel Standard Care Package
+			[19150] = true,	-- Sentinel Basic Care Package
+			[19035] = true,	-- Lard's Special Picnic Basket
+			[18804] = true,	-- Lord Grayson's Satchel
+			[18636] = true,	-- Ruined Jumper Cables XL
+			[17969] = true,	-- Red Sack of Gems
+			[17965] = true,	-- Yellow Sack of Gems
+			[17964] = true,	-- Gray Sack of Gems
+			[17963] = true,	-- Green Sack of Gems
+			[17962] = true,	-- Blue Sack of Gems
+		--	[16885] = false,	-- Heavy Junkbox
+		--	[16884] = false,	-- Sturdy Junkbox
+		--	[16883] = false,	-- Worn Junkbox
+		--	[16882] = false,	-- Battered Junkbox
+			[16783] = true,	-- Bundle of Reports
+			[15902] = true,	-- A Crazy Grab Bag
+			[15876] = true,	-- Nathanos' Chest
+		--	[15874] = false,	-- Soft-shelled Clam
+			[15699] = true,	-- Small Brown-Wrapped Package
+			[15103] = true,	-- Corrupt Tested Sample
+			[15102] = true,	-- Un'Goro Tested Sample
+		--	[13918] = false,	-- Reinforced Locked Chest
+			[13891] = true,	-- Bloated Salmon
+			[13881] = true,	-- Bloated Redgill
+		--	[13875] = false,	-- Ironbound Locked Chest
+			[13874] = true,	-- Heavy Crate
+			[13247] = true,	-- Quartermaster Zigris' Footlocker	Not [22233]
+			[12849] = true,	-- Demon Kissed Sack
+			[12339] = true,	-- Vaelan's Gift
+			[12122] = true,	-- Kum'isha's Junk
+		--	[12033] = false,	-- Thaurissan Family Jewels
+			[11966] = true,	-- Small Sack of Coins
+			[11955] = true,	-- Bag of Empty Ooze Containers
+			[11938] = true,	-- Sack of Gems
+			[11937] = true,	-- Fat Sack of Coins
+			[11912] = true,	-- Package of Empty Ooze Containers
+			[11887] = true,	-- Cenarion Circle Cache
+			[11883] = true,	-- A Dingy Fanny Pack
+			[11617] = true,	-- Eridan's Supplies
+			[11568] = true,	-- Torwa's Pouch
+			[11423] = true,	-- Gnome Engineer's Renewal Gift
+			[11422] = true,	-- Goblin Engineer's Renewal Gift
+			[11107] = true,	-- A Small Pack
+			[11024] = true,	-- Evergreen Herb Casing
+			[10834] = true,	-- Felhound Tracker Kit
+			[10773] = true,	-- Hakkari Urn
+			[10752] = true,	-- Emerald Encrusted Chest
+			[10695] = true,	-- Box of Empty Vials
+			[10595] = true,	-- Kum'isha's Junk
+			[10569] = true,	-- Hoard of the Black Dragonflight
+			[10479] = true,	-- Kovic's Trading Satchel
+			[10456] = true,	-- A Bulging Coin Purse
+			[9541] = true,	-- Box of Goodies
+			[9540] = true,	-- Box of Spells
+			[9539] = true,	-- Box of Rations
+			[9537] = true,	-- Neatly Wrapped Box
+			[9532] = true,	-- Internal Warrior Equipment Kit L30
+			[9529] = true,	-- Internal Warrior Equipment Kit L25
+			[9363] = true,	-- Sparklematic-Wrapped Box
+			[9276] = true,	-- Pirate's Footlocker
+			[9265] = true,	-- Cuergo's Hidden Treasure
+			[8647] = true,	-- Egg Crate
+			[8507] = true,	-- Heavy Mithril Lotterybox
+			[8506] = true,	-- Mithril Lotterybox
+			[8505] = true,	-- Heavy Iron Lotterybox
+			[8504] = true,	-- Iron Lotterybox
+			[8503] = true,	-- Heavy Bronze Lotterybox
+			[8502] = true,	-- Bronze Lotterybox
+			[8484] = true,	-- Gadgetzan Water Co. Care Package
+			[8366] = true,	-- Bloated Trout
+			[8049] = true,	-- Gnarlpine Necklace
+		--	[7973] = false,	-- Big-Mouth Clams
+		--	[7870] = false,	-- Thaumaturgy Vessel Lockbox
+		--	[7209] = false,	-- Tazan's Satchel
+			[7190] = true,	-- Scorched Rocket Boots
+			[6827] = true,	-- Box of Supplies
+			[6755] = true,	-- A Small Container of Gems
+			[6715] = true,	-- Ruined Jumper Cables
+			[6647] = true,	-- Bloated Catfish
+			[6646] = true,	-- Bloated Albacore
+			[6645] = true,	-- Bloated Mud Snapper
+			[6644] = true,	-- Bloated Mackerel
+			[6643] = true,	-- Bloated Smallfish
+			[6357] = true,	-- Sealed Crate
+			[6356] = true,	-- Battered Chest
+		--	[6355] = false,	-- Sturdy Locked Chest
+		--	[6354] = false,	-- Small Locked Chest 
+			[6353] = true,	-- Small Chest
+			[6352] = true,	-- Waterlogged Crate
+			[6351] = true,	-- Dented Crate
+			[6307] = true,	-- Message in a Bottle
+			[5858] = true,	-- Goblin Prize Box
+			[5857] = true,	-- Gnome Prize Box
+		--	[5760] = false,	-- Eternium Lockbox
+		--	[5759] = false,	-- Thorium Lockbox
+		--	[5758] = false,	-- Mithril Lockbox
+			[5738] = true,	-- Covert Ops Pack
+		--	[5524] = false,	-- Thick-shelled Clam
+		--	[5523] = false,	-- Small Barnacled Clam
+			[5335] = true,	-- A Sack of Coins
+		--	[4638] = false,	-- Reinforced Steel Lockbox
+		--	[4637] = false,	-- Steel Lockbox
+		--	[4636] = false,	-- Strong Iron Lockbox
+		--	[4634] = false,	-- Iron Lockbox
+		--	[4633] = false,	-- Heavy Bronze Lockbox
+		--	[4632] = false,	-- Ornate Bronze Lockbox
 			[118473] = true,	-- Small Sack of Salvaged Goods
 			[114116] = true,	-- Bag of Salvaged Goods
 			[114119] = true,	-- Crate of Salvage
 			[114120] = true,	-- Big Crate of Salvage
 }
 
-print(L["loading"])
-
-function FastOpen:Register(event, func)
-	self:RegisterEvent(event)
-	self[event] = function(...)
-		func(...)
-	end
+function FastOpen:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(paneType)
+   if paneType ==  Enum.PlayerInteractionType.TradePartner then
+      isLooting = true
+   end
+   if paneType ==  Enum.PlayerInteractionType.Merchant then
+      atMerchant = true
+   end
+   if paneType ==  Enum.PlayerInteractionType.Vendor then
+      atMerchant = true
+   end
+   if paneType ==  Enum.PlayerInteractionType.TabardVendor then
+      atMerchant = true
+   end
+   if paneType ==  Enum.PlayerInteractionType.Banker then
+      atBank = true
+   end
+   if paneType ==  Enum.PlayerInteractionType.GuildBanker then
+      atBank = true
+   end
+   if paneType ==  Enum.PlayerInteractionType.MailInfo then
+      atMail = true
+   end
 end
 
-FastOpen:Register('BANKFRAME_OPENED', function()
-	atBank = true
-end)
+function FastOpen:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(paneType)
+   if paneType ==  Enum.PlayerInteractionType.TradePartner then
+      isLooting = false
+   end
+   if paneType ==  Enum.PlayerInteractionType.Merchant then
+      atMerchant = false
+   end
+   if paneType ==  Enum.PlayerInteractionType.Vendor then
+      atMerchant = false
+   end
+   if paneType ==  Enum.PlayerInteractionType.TabardVendor then
+      atMerchant = false
+   end
+   if paneType ==  Enum.PlayerInteractionType.Banker then
+      atBank = false
+   end
+   if paneType ==  Enum.PlayerInteractionType.GuildBanker then
+      atBank = false
+   end
+   if paneType ==  Enum.PlayerInteractionType.MailInfo then
+      atMail = false
+   end
+   AutomaticOpener()
+end
 
-FastOpen:Register('BANKFRAME_CLOSED', function()
-	atBank = false
-end)
+function FastOpen:TRADE_SKILL_SHOW()
+   isCrafting = true
+end
 
-FastOpen:Register('GUILDBANKFRAME_OPENED', function()
-	atBank = true
-end)
+function FastOpen:TRADE_SKILL_CLOSE()
+   isCrafting = false
+   AutomaticOpener()
+end
 
-FastOpen:Register('GUILDBANKFRAME_CLOSED', function()
-	atBank = false
-end)
+function FastOpen:LOOT_OPENED()
+   isLooting = true
+end
 
-FastOpen:Register('MAIL_SHOW', function()
-	atMail = true
-end)
+function FastOpen:LOOT_CLOSED()
+   isLooting = false
+   AutomaticOpener()
+end
 
-FastOpen:Register('MAIL_CLOSED', function()
-	atMail = false
-end)
+function FastOpen:PLAYER_REGEN_DISABLED()
+   inCombat = true
+end
 
-FastOpen:Register('MERCHANT_SHOW', function()
-	atMerchant = true
-end)
+function FastOpen:PLAYER_REGEN_ENABLED()
+   inCombat = false
+   AutomaticOpener()
+end
 
-FastOpen:Register('MERCHANT_CLOSED', function()
-	atMerchant = false
-end)
+function FastOpen:BAG_UPDATE_DELAYED()
+   AutomaticOpener()
+end
 
-FastOpen:Register('BAG_UPDATE_DELAYED', function(bag)
-	if(atBank or atMail or atMerchant) then return end
-	
-	for bag = 0, 4 do
-		for slot = 0, C_Container.GetContainerNumSlots(bag) do
-			local id = C_Container.GetContainerItemID(bag, slot)
-			if id and autoOpenItems[id] then
-				DEFAULT_CHAT_FRAME:AddMessage("|cFFFFD700FastOpen:|cFF9D9D9D" .. C_Container.GetContainerItemLink(bag, slot))	
-				C_Container.UseContainerItem(bag, slot)
-				return
-			end
-		end
-	end
-end)
+function AutomaticOpener()
+   if (atBank or atMail or atMerchant or inCombat or isLooting or isCrafting) then return end
+   for bag = 0, 4 do
+      for slot = 0, C_Container.GetContainerNumSlots(bag) do
+         local id = C_Container.GetContainerItemID(bag, slot)
+         if id and AllowedItemsList[id] then
+            if C_Container.GetContainerItemInfo(bag, slot).isLocked then return end
+            DEFAULT_CHAT_FRAME:AddMessage(L["Opening"] .. C_Container.GetContainerItemLink(bag, slot))
+            C_Container.UseContainerItem(bag, slot)
+            return
+         end
+      end
+   end
+end
+
+FastOpen:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW')
+FastOpen:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE')
+FastOpen:RegisterEvent('TRADE_SKILL_SHOW')
+FastOpen:RegisterEvent('TRADE_SKILL_CLOSE')
+FastOpen:RegisterEvent('LOOT_OPENED')
+FastOpen:RegisterEvent('LOOT_CLOSED')
+FastOpen:RegisterEvent('PLAYER_REGEN_DISABLED')
+FastOpen:RegisterEvent('PLAYER_REGEN_ENABLED')
+FastOpen:RegisterEvent('BAG_UPDATE_DELAYED')
