@@ -1401,6 +1401,7 @@ local AllowedItemsList = {
 			[35286] = true,	-- Bloated Giant Sunfish
 			[35232] = true,	-- Shattered Sun Supplies
 			[34871] = true,	-- Crafty's Sack
+			[207594] = true,	-- Looter's Purse
 
 --	02	WORLD OF WARCRAFT:	BURNING CRUSADE
 
