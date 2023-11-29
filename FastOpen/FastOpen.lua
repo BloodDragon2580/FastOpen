@@ -89,6 +89,15 @@ local AllowedItemsList = {
 
 --	10	WORLD OF WARCRAFT:	DRAGONFLIGHT
 
+			[211414] = true,	-- Blossoming Dreamtrove
+			[211413] = true,	-- Budding Dreamtrove
+			[211411] = true,	-- Sprouting Dreamtrove
+			[211410] = true,	-- Bloomed Wilding Cache
+			[211394] = true,	-- Harvested Dreamseed Cache
+			[211389] = true,	-- Cache of Overblooming Treasures
+			[211373] = true,	-- Bag of Many Wonders
+			[211303] = true,	-- Dryad's Supply Pouch
+			[210872] = true,	-- Satchel of Dreams
 			[210063] = true,	-- Invader's Satchel of Helpful Goods
 			[208090] = true,	-- Contained Paracausality
 			[208054] = true,	-- Mystery Box
