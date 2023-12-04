@@ -89,6 +89,20 @@ local AllowedItemsList = {
 
 --	10	WORLD OF WARCRAFT:	DRAGONFLIGHT
 
+			[210757] = true,	-- Dream Warden Emblem
+			[211374] = true,	-- Tangled Yarn of Secrets -> "Untangling" -> Dream Wardens rep
+			[207473] = true,	-- "Blazing Dreamheart" Amirdrassil tokens
+			[207469] = true,	-- "Tormented Dreamheart" Amirdrassil tokens
+			[207481] = true,	-- "Smoldering Dreamheart" Amirdrassil tokens
+			[207477] = true,	-- "Ashen Dreamheart" Amirdrassil tokens
+			[207465] = true,	-- "Verdurous Dreamheart" Amirdrassil tokens
+			[210996] = true,	-- Moonberry's Many Mischief Makers
+			[208396] = true,	-- Dragon Shard of Knowledge
+			[210770] = true,	-- Satchel of Drake's Dreaming Crests
+			[210917] = true,	-- Pouch of Whelpling's Dreaming Crests
+			[210923] = true,	-- Clutch of Wyrm's Dreaming Crests
+			[209837] = true,	-- Faint Whispers of Dreaming
+			[210790] = true,	-- Ensemble: Elegant Green Dragon Outerwear
 			[211414] = true,	-- Blossoming Dreamtrove
 			[211413] = true,	-- Budding Dreamtrove
 			[211411] = true,	-- Sprouting Dreamtrove
