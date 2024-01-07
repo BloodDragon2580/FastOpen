@@ -89,6 +89,13 @@ local AllowedItemsList = {
 
 --	10	WORLD OF WARCRAFT:	DRAGONFLIGHT
 
+			[210234] = true,	-- Essence of Dreams -- needs to be disenchanted!
+			[210231] = true,	-- Everburning Core -- needs to be disenchanted!
+			[210468] = true,	-- Emerald Blossom Dreamstone
+			[209604] = true,	-- Ensemble: Raiment of Amirdrassil
+			[210762] = true,	-- Shimmering Clutch of Wyrm's Dreaming Crests
+			[210756] = true,	-- Gleaming Satchel of Drake's Dreaming Crests
+			[210768] = true,	-- Viridescent Bouquet of Aspect's Dreaming Crests
 			[210757] = true,	-- Dream Warden Emblem
 			[211374] = true,	-- Tangled Yarn of Secrets -> "Untangling" -> Dream Wardens rep
 			[207473] = true,	-- "Blazing Dreamheart" Amirdrassil tokens

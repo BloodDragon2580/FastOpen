@@ -2,7 +2,7 @@
 ## Title:|cffd6266cFastOpen|r
 ## Notes: Auto Open Items
 ## Author: BloodDragon2580
-## Version: 1.9
+## Version: 2.0
 ## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
 
 embeds.xml
