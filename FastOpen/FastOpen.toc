@@ -1,8 +1,8 @@
-## Interface: 100200
+## Interface: 100205
 ## Title:|cffd6266cFastOpen|r
 ## Notes: Auto Open Items
 ## Author: BloodDragon2580
-## Version: 2.0
+## Version: 2.1
 ## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
 
 embeds.xml
