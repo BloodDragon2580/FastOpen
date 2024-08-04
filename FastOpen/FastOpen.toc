@@ -4,7 +4,18 @@
 ## Author: BloodDragon2580
 ## Version: 2.3
 ## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
+## SavedVariables: FastOpenProfile
+## OptionalDeps: Masque, WagoAnalytics
 
 embeds.xml
 locale\locale.xml
-FastOpen.lua
+
+private.lua
+data.lua 
+button.lua
+profile.lua
+events.lua
+core.lua
+item.lua
+slash.lua
+quest.lua
