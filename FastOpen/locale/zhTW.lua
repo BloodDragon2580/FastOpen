@@ -9,7 +9,7 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale(ADDON, "zhTW");
 if not L then return end
 --
-L["FastOpen_TITLE"] = "New Openables"
+L["FastOpen_TITLE"] = "FastOpen"
 L["FastOpen_VERSION"] = "|cFFFFFFFF%s 使用 |cFFFF00FF/FastOpen|cFFFFFFFF"
 L["CLICK_DRAG_MSG"] = "ALT-左鍵點擊拖曳移動。"
 L["CLICK_OPEN_MSG"] = "左鍵點擊開啟或使用。"

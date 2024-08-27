@@ -9,7 +9,7 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale(ADDON, "enUS", true, false); -- default translation, not silent load
 if not L then return; end
 --
-L["FastOpen_TITLE"] = "New Openables"
+L["FastOpen_TITLE"] = "FastOpen"
 L["FastOpen_VERSION"] = "|cFFFFFFFF%s use |cFFFF00FF/FastOpen|cFFFFFFFF"
 L["CLICK_DRAG_MSG"] = "ALT-LeftClick and drag to move."
 L["CLICK_OPEN_MSG"] = "LeftClick to open or use."

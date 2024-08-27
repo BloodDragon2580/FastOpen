@@ -9,7 +9,7 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale(ADDON, "deDE");
 if not L then return; end
 --
-L["FastOpen_TITLE"] = "New Openables"
+L["FastOpen_TITLE"] = "FastOpen"
 L["FastOpen_VERSION"] = "|cFFFFFFFF%s - benutze |cFFFF00FF/FastOpen|cFFFFFFFF"
 L["CLICK_DRAG_MSG"] = "ALT-Linksklick und ziehen, um zu verschieben."
 L["CLICK_OPEN_MSG"] = "Linksklick, um Gegenstand zu öffnen oder zu benutzen."

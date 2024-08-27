@@ -9,7 +9,7 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale(ADDON, "esES");
 if not L then return end
 --
-L["FastOpen_TITLE"] = "New Openables"
+L["FastOpen_TITLE"] = "FastOpen"
 L["FastOpen_VERSION"] = "|cFFFFFFFF%s use |cFFFF00FF/FastOpen|cFFFFFFFF"
 L["CLICK_DRAG_MSG"] = "ALT-ClicIzq y arrastre para mover."
 L["CLICK_OPEN_MSG"] = "ClicIzq para abrir o usar."
