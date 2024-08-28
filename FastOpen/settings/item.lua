@@ -376,6 +376,7 @@ function FastOpen:ItemShow(itemID,prio) -- add item to button
   --local mtext = format(P.MACRO_ACTIVE,itemID)
   --local mtarget = format("%d",itemID)
   local mtarget = format("item:%d", itemID)
+  --local mtarget = format("%d %d", bagID, slotID)
   local mtargetitem = nil
   local mtype = "item"
   local mspell = nil

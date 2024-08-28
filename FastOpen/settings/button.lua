@@ -1,6 +1,4 @@
--- Button functions
 local _
--- global functions and variebles to locals to keep LINT happy
 local assert = _G.assert
 local BROWSE_NO_RESULTS = _G.BROWSE_NO_RESULTS; assert(BROWSE_NO_RESULTS ~= nil,'BROWSE_NO_RESULTS')
 local CreateFrame = _G.CreateFrame; assert(CreateFrame ~= nil,'CreateFrame')
@@ -9,7 +7,6 @@ local GameTooltip_SetDefaultAnchor = _G.GameTooltip_SetDefaultAnchor; assert(Gam
 local GetCVar = _G.GetCVar; assert(GetCVar ~= nil,'GetCVar')
 local GetItemCooldown = _G.GetItemCooldown or _G.C_Item.GetItemCooldown; assert(GetItemCooldown ~= nil,'GetItemCooldown')
 local GetItemInfo = _G.GetItemInfo or _G.C_Item.GetItemInfo; assert(GetItemInfo ~= nil,'GetItemInfo')
---local GetMouseFocus = _G.GetMouseFocus; assert(GetMouseFocus ~= nil,'GetMouseFocus')
 local GetScreenWidth = _G.GetScreenWidth; assert(GetScreenWidth ~= nil,'GetScreenWidth')
 local GetTime = _G.GetTime; assert(GetTime ~= nil,'GetTime')
 local IsAltKeyDown = _G.IsAltKeyDown; assert(IsAltKeyDown ~= nil,'IsAltKeyDown')
@@ -23,10 +20,8 @@ local tremove = _G.tremove; assert(tremove ~= nil,'tremove')
 local type = _G.type; assert(type ~= nil,'type')
 local UIParent = _G.UIParent; assert(UIParent ~= nil,'UIParent')
 local unpack = _G.unpack; assert(unpack ~= nil,'unpack')
--- local AddOn
 local ADDON, P = ...
 local FastOpen = LibStub("AceAddon-3.0"):GetAddon(ADDON)
--- private variables and constants
 local BUTTON_FRAME = P.BUTTON_FRAME; assert(BUTTON_FRAME ~= nil,'BUTTON_FRAME')
 local CLICK_BLACKLIST_MSG = P.CLICK_BLACKLIST_MSG; assert(CLICK_BLACKLIST_MSG ~= nil,'CLICK_BLACKLIST_MSG')
 local CLICK_DRAG_MSG = P.CLICK_DRAG_MSG; assert(CLICK_DRAG_MSG ~= nil,'CLICK_DRAG_MSG')
@@ -40,7 +35,6 @@ local MOUSE_LB = P.MOUSE_LB; assert(MOUSE_LB ~= nil,'MOUSE_LB')
 local MOUSE_RB = P.MOUSE_RB; assert(MOUSE_RB ~= nil,'MOUSE_RB')
 local TIMER_IDLE = P.TIMER_IDLE; assert(TIMER_IDLE ~= nil,'TIMER_IDLE')
 local print = P.print; assert(print ~= nil,'print')
--- private functions
 local function SetOutside(obj, anchor, xOffset, yOffset)
   xOffset = xOffset or 1
   yOffset = yOffset or 1
@@ -61,10 +55,9 @@ local function SetInside(obj, anchor, xOffset, yOffset)
   obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
   obj:SetPoint('BOTTOMRIGHT', anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
 end
---
-function FastOpen:ButtonSkin(button,skin) -- skin or restore button look
+function FastOpen:ButtonSkin(button,skin)
   if not button then return end
-  if self.masque and FastOpen.AceDB.profile.masque then -- let Masque do its job
+  if self.masque and FastOpen.AceDB.profile.masque then
     if button.isSkinned == nil then self.masque:AddButton(button); self.masque:ReSkin() end
     button.isSkinned = true
     return
@@ -72,31 +65,31 @@ function FastOpen:ButtonSkin(button,skin) -- skin or restore button look
   if skin then
     if button.isSkinned then return end
     local ht = button:CreateTexture(nil,"OVERLAY")
-    if ht.SetTexture then ht:SetColorTexture(0.3, 0.3, 0.3, 0.5) end -- semitransparent highlight
+    if ht.SetTexture then ht:SetColorTexture(0.3, 0.3, 0.3, 0.5) end
     if ht.SetInside then ht:SetInside() else SetInside(ht) end
     button.ht = ht
     if button.SetHighlightTexture then button:SetHighlightTexture(ht) end
     local pt = button:CreateTexture(nil,"OVERLAY")
-    if pt.SetTexture then pt:SetColorTexture(0, 0, 0, 0) end -- transparent push
+    if pt.SetTexture then pt:SetColorTexture(0, 0, 0, 0) end
     if pt.SetInside then pt:SetInside() else SetInside(pt) end
     button.pt = pt
     button:SetPushedTexture(pt)
-    if button.cooldown then -- remove swipe
+    if button.cooldown then
       if button.cooldown.SetDrawEdge then button.cooldown:SetDrawEdge(false) end
       if button.cooldown.SetDrawBling then button.cooldown:SetDrawBling(false) end
       if button.cooldown.SetDrawSwipe then button.cooldown:SetDrawSwipe(false) end
       if button.cooldown.SetSwipeColor then button.cooldown:SetSwipeColor(0, 0, 0, 0) end
     end
-    if not _G.WWM then button.icon:SetTexCoord(0.08,0.92,0.08,0.92) end -- cut out icon border
+    if not _G.WWM then button.icon:SetTexCoord(0.08,0.92,0.08,0.92) end
     if button.icon.SetInside then button.icon:SetInside() else SetInside(button.icon) end
-    button.normal:SetTexture(nil) -- kill texture
-    button.normal:Hide() -- hide overlay
-    button.normal:SetAlpha(0) -- kill transparency
+    button.normal:SetTexture(nil)
+    button.normal:Hide()
+    button.normal:SetAlpha(0)
     button.hotkey:ClearAllPoints()
     button.hotkey:SetPoint("TOPRIGHT", 1, -2)
-    button.isSkinned = true -- skin only once
+    button.isSkinned = true
   else
-    if (button.isSkinned == nil) then return end -- nothing to restore is not skinned
+    if (button.isSkinned == nil) then return end
     if button.b_icon then button.icon:SetTexCoord(unpack(button.b_icon)) end
     if button.b_texture then button.normal:SetTexture(button.b_texture) end
     if button.b_alpha then button.normal:SetAlpha(button.b_alpha) end
@@ -118,23 +111,23 @@ function FastOpen:ButtonSkin(button,skin) -- skin or restore button look
     button.isSkinned = nil
   end
 end
-function FastOpen:ButtonReputation(tooltip,func) -- add reputation into tooltip
+function FastOpen:ButtonReputation(tooltip,func)
   if not (tooltip and tooltip.GetItem) then return end
-  local OHC = _G.OHC -- reference to order hall commander addon
-  local OrderHallMissionFrame = _G.OrderHallMissionFrame -- Order Hall Mission frame
-  if (func == "SetItemByID") and (OHC ~= nil) and OrderHallMissionFrame and OrderHallMissionFrame:IsVisible() then return end -- OHC have own tooltip for reward with reputation item
+  local OHC = _G.OHC
+  local OrderHallMissionFrame = _G.OrderHallMissionFrame
+  if (func == "SetItemByID") and (OHC ~= nil) and OrderHallMissionFrame and OrderHallMissionFrame:IsVisible() then return end
   local name = tooltip:GetItem(); if not name then return end
   local level, top, value, reward = self:GetReputation(name); if not level then return end
-  if level < 8 then -- up to exalted
+  if level < 8 then
     tooltip:AddLine(_G['FACTION_STANDING_LABEL' .. level] .. (" |cffca3c3c%.2f%%|r"):format((value/top) * 100.0))
   else
     tooltip:AddLine(_G['FACTION_STANDING_LABEL' .. level] .. (reward and "+" or ''))
   end
   tooltip:Show()
 end
-function FastOpen:ButtonOnEnter(button) -- show tooltip
+function FastOpen:ButtonOnEnter(button)
   if self:inCombat() then return; end
-  if not _G.ElvUI then -- with ElvUI installed this is not neccessary
+  if not _G.ElvUI then
     if GetCVar("UberTooltips") == "1" then
       GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
     else
@@ -162,14 +155,14 @@ function FastOpen:ButtonOnEnter(button) -- show tooltip
   if not FastOpen.AceDB.profile.lockButton then 
     GameTooltip:AddLine(MOUSE_LB .. CLICK_DRAG_MSG)
   end
-  GameTooltip:SetClampedToScreen(true) -- tooltip must stay at screen
+  GameTooltip:SetClampedToScreen(true)
   GameTooltip:Show()
 end
-function FastOpen:ButtonOnLeave(button) -- hide tooltip
+function FastOpen:ButtonOnLeave(button)
   if self:inCombat() then return; end
   GameTooltip:Hide()
 end
-function FastOpen:ButtonPostClick(button) -- post click on button
+function FastOpen:ButtonPostClick(button)
   if button then
     self.BF.clickON = nil
     if (button == 'RightButton') then
@@ -179,7 +172,7 @@ function FastOpen:ButtonPostClick(button) -- post click on button
     self:TimerFire("ItemShowNew", TIMER_IDLE / 3)
   end
 end
-function FastOpen:ButtonPreClick(bt, button) -- post click on button
+function FastOpen:ButtonPreClick(bt, button)
   if button then
     if (button == 'RightButton') then
       bt:SetAttribute("type", nil)
@@ -189,26 +182,26 @@ function FastOpen:ButtonPreClick(bt, button) -- post click on button
     end
   end
 end
-function FastOpen:ButtonOnDragStart(button) -- start moving
+function FastOpen:ButtonOnDragStart(button)
   if FastOpen.AceDB.profile.lockButton or self:inCombat() then return end
   if IsAltKeyDown() then button:StartMoving() end
 end
-function FastOpen:ButtonOnDragStop(button) -- stop moving and save new position
+function FastOpen:ButtonOnDragStop(button)
   button:StopMovingOrSizing()
   self:ButtonSave()
-  self:QBAnchorSave() -- now always save if FastOpen.AceDB.profile.qb_sticky then self:QBAnchorSave() end
+  self:QBAnchorSave()
 end
-function FastOpen:ButtonReset() -- reset button to default position
+function FastOpen:ButtonReset()
   if self:inCombat() then self:TimerFire("ButtonReset", TIMER_IDLE); return end
-  self.AceDB.profile.iconSize = DEFAULT_ICON_SIZE -- default size
-  self.AceDB.profile.lockButton = false -- unlock
+  self.AceDB.profile.iconSize = DEFAULT_ICON_SIZE
+  self.AceDB.profile.lockButton = false
   self.AceDB.profile.button = {"CENTER", nil, "CENTER", 0, 0}
   self:ButtonSize()
   self:ButtonMove()
   self:QBUpdate()
   print(L["BUTTON_RESET"])
 end
-function FastOpen:ButtonSize() -- resize button
+function FastOpen:ButtonSize()
   if self:inCombat() then self:TimerFire("ButtonSize", TIMER_IDLE); return end
   self.timerButtonSize = nil
   if not self.BF then return end
@@ -216,27 +209,27 @@ function FastOpen:ButtonSize() -- resize button
   if not (GetScreenWidth() > 1500) then iconSize = math.floor(iconSize * 0.75) end
   self.BF:SetWidth(iconSize)
   self.BF:SetHeight(iconSize)
-  if FastOpen.AceDB.profile.qb_sticky then self:QBAnchorSize(); self:QBUpdate(); end -- Quest Bar is locked to Item Button
+  if FastOpen.AceDB.profile.qb_sticky then self:QBAnchorSize(); self:QBUpdate(); end
 end
-function FastOpen:ButtonSave() -- save button position after move
+function FastOpen:ButtonSave()
   if not self.BF then return end
   local point, relativeTo, relativePoint, xOfs, yOfs = self.BF:GetPoint()
   FastOpen.AceDB.profile.button = {point or "CENTER", relativeTo and relativeTo.GetName and relativeTo:GetName() or "UIParent", relativePoint or "CENTER", xOfs, yOfs}
 end
-function FastOpen:ButtonMove() -- move button from UI config
+function FastOpen:ButtonMove()
   if self:inCombat() then self:TimerFire("ButtonMove", TIMER_IDLE); return end
   self.BF:SetClampedToScreen(true)
   self.BF:ClearAllPoints()
   local frame = FastOpen.AceDB.profile.button[2] or "none"
-  if _G[frame] then frame = _G[frame] else frame = nil end -- test if can find frame by name in saved LUA variables
+  if _G[frame] then frame = _G[frame] else frame = nil end
   if not frame then
-    if FastOpen.AceDB.profile.HideInCombat then frame = self.frameHiderB else frame = UIParent end -- restore frame anchor via requested state
+    if FastOpen.AceDB.profile.HideInCombat then frame = self.frameHiderB else frame = UIParent end
   end
-  if not FastOpen.AceDB.profile.HideInCombat and frame == self.frameHiderB then frame = UIParent end -- if hide in combat is disabled then can't be anchored to hider
+  if not FastOpen.AceDB.profile.HideInCombat and frame == self.frameHiderB then frame = UIParent end
   self.BF:SetPoint(FastOpen.AceDB.profile.button[1] or "CENTER", frame, FastOpen.AceDB.profile.button[3] or "CENTER", FastOpen.AceDB.profile.button[4] or 0, FastOpen.AceDB.profile.button[5] or 0)
   self:ButtonSave()
 end
-function FastOpen:ButtonStore(button) -- save default properties
+function FastOpen:ButtonStore(button)
   local name = button and button:GetName()
   if not name then return end
   button.icon   = _G[name .. "Icon"]
@@ -244,17 +237,17 @@ function FastOpen:ButtonStore(button) -- save default properties
   button.count  = _G[name .. "Count"]
   button.normal = _G[name .. "NormalTexture"]
   if self.masque == nil then
-    button.b_icon     = {button.icon:GetTexCoord()} -- save actual values
-    button.b_texture  = button.normal:GetTexture() -- save original texture
-    button.b_alpha    = button.normal:GetAlpha() -- save original value
-    button.b_count    = {button.count:GetPoint()} -- save points
-    button.b_hotkey   = {button.hotkey:GetPoint()} -- save points
+    button.b_icon     = {button.icon:GetTexCoord()}
+    button.b_texture  = button.normal:GetTexture()
+    button.b_alpha    = button.normal:GetAlpha()
+    button.b_count    = {button.count:GetPoint()}
+    button.b_hotkey   = {button.hotkey:GetPoint()}
     button.b_htexture = button.GetHighlightTexture and button:GetHighlightTexture() or nil
     button.b_ptexture = button.GetPushedTexture and button:GetPushedTexture() or nil
     button.b_draw     = button.cooldown and button.cooldown.GetDrawEdge and button.cooldown:GetDrawEdge() or false
   end
 end
-function FastOpen:ButtonBackdrop(bt) -- create backdrop for button
+function FastOpen:ButtonBackdrop(bt)
   if not FastOpen.AceDB.profile.backdrop then return end
   if self.masque and FastOpen.AceDB.profile.masque then return end
   local btex = bt:CreateTexture(nil, "BACKGROUND")
@@ -263,16 +256,16 @@ function FastOpen:ButtonBackdrop(bt) -- create backdrop for button
   if btex.SetOutside then btex:SetOutside(bt) else SetOutside(btex,bt) end
   bt.backdropTexture = btex
 end
-function FastOpen:ButtonLoad() -- create button, restore his position
+function FastOpen:ButtonLoad()
   if self:inCombat() then self:TimerFire("ButtonLoad", TIMER_IDLE); return end
-  if not self.BF then -- new button
+  if not self.BF then
     self.BF = CreateFrame("Button", BUTTON_FRAME, self.frameHiderB, "SecureActionButtonTemplate, ActionButtonTemplate")
     local bt = self.BF
     if bt:IsVisible() or bt:IsShown() then bt:Hide() end
     bt:SetFrameStrata(FastOpen.AceDB.profile.strata and "HIGH" or "MEDIUM")
-    self:ButtonBackdrop(bt) -- create backdrop around button if enabled
-    bt:RegisterForDrag("LeftButton") -- ALT-LEFT-MOUSE for drag
-    bt:RegisterForClicks("AnyUp", "AnyDown") -- act on key release 
+    self:ButtonBackdrop(bt)
+    bt:RegisterForDrag("LeftButton")
+    bt:RegisterForClicks("AnyUp", "AnyDown")
     bt:SetScript("OnEnter",     function(self) FastOpen:ButtonOnEnter(self) end)
     bt:SetScript("OnLeave",     function(self) FastOpen:ButtonOnLeave(self) end)
     bt:SetScript("PreClick",    function(self,button) FastOpen:ButtonPreClick(self, button) FastOpen.preClick = true end)
@@ -288,12 +281,12 @@ function FastOpen:ButtonLoad() -- create button, restore his position
     bt:EnableMouse(true)
     bt:SetMovable(true)
   end
-  self:ButtonSize() -- set or restore size
-  self:ButtonMove() -- set or restore position
+  self:ButtonSize()
+  self:ButtonMove()
   self:ButtonSkin(self.BF, FastOpen.AceDB.profile.skinButton)
   self:ButtonSwap(self.BF, FastOpen.AceDB.profile.swap)
 end
-function FastOpen:ButtonSwap(bt,swap) -- swap count and timer text sides on button
+function FastOpen:ButtonSwap(bt,swap)
   if not bt then return end
   if not bt.timer then return end
   if not bt.count then return end
@@ -317,49 +310,38 @@ function FastOpen:ButtonSwap(bt,swap) -- swap count and timer text sides on butt
     bt.timer:SetJustifyV("MIDDLE")
   end
 end
-function FastOpen:ButtonCount(count) -- update counter on button
+function FastOpen:ButtonCount(count)
   if self.BF and self.BF.count then
     self.BF.count:SetText((type(count) == "number") and (count > 1) and count or "")
   end
 end
-function FastOpen:ButtonShow() -- display button
+function FastOpen:ButtonShow()
   if self:inCombat() then self:TimerFire("ButtonShow", TIMER_IDLE); return end
   local bt = self.BF
   self:ButtonCount(bt.itemCount)
   bt.icon:SetTexture(bt.itemTexture or DEFAULT_ICON)
-  --if (GetMouseFocus() == bt) then self:ButtonOnEnter(bt) end -- update tooltip if mouse is over button
-  if (bt:IsMouseMotionFocus()) then self:ButtonOnEnter(bt) end -- update tooltip if mouse is over button
+  if (bt:IsMouseMotionFocus()) then self:ButtonOnEnter(bt) end
   if bt.itemTexture then
-    --bt:SetAttribute("type1", "macro") -- "type1" Unmodified left click.
-    --bt:SetAttribute("macrotext1", bt.mtext)
-    --self:Verbose("ButtonShow:","macro text",self:CompressText(bt.mtext))
     bt:SetAttribute("type", bt.mtype)
     bt:SetAttribute("spell", bt.mspell)
-    bt:SetAttribute("item", bt.mtarget) -- ("bag slot")
-    bt:SetAttribute("target-item", bt.mtargetitem) -- ("bag slot")
+    bt:SetAttribute("item", bt.mtarget)
+    bt:SetAttribute("target-item", bt.mtargetitem)
     self:Verbose("ButtonShow:",self:CompressText(bt.mtype),bt.mspell and self:CompressText(bt.mspell),bt.mtarget and self:CompressText("item: " .. bt.mtarget),bt.mtargetitem and self:CompressText("target-item: " .. bt.mtargetitem))
   else
-    --bt:SetAttribute("macrotext1", nil)
     bt:SetAttribute("type", nil)
     bt:SetAttribute("spell", nil)
     bt:SetAttribute("target-item", nil)
     bt:SetAttribute("item", nil)
   end
-  -- self:printt("ButtonShow:","macro text",self:CompressText(bt.mtext))
   if not (bt:IsVisible() or bt:IsShown()) then bt:Show() end
   if FastOpen.AceDB.profile.glowButton and bt.isGlow then
-  --if (true) then
     self.ActionButton_ShowOverlayGlow(bt)
-    --ActionButton_ShowOverlayGlow(bt)
-    --local frameWidth, frameHeight = bt:GetSize()
-    --SetOutside(bt.SpellActivationAlert,bt,frameWidth/3, frameHeight/3) -- adopted from ElvUI to glow outside
   else
     self.ActionButton_HideOverlayGlow(bt)
-    --ActionButton_HideOverlayGlow(bt)
   end
-  self.BF.clickON = true -- signals to other addon about new item on button
+  self.BF.clickON = true
 end
-function FastOpen:ButtonHide() -- hide button
+function FastOpen:ButtonHide()
   if self:inCombat() then self:TimerFire("ButtonHide", TIMER_IDLE); return end
   local bt = self.BF
   bt.itemCount = 0
@@ -369,21 +351,19 @@ function FastOpen:ButtonHide() -- hide button
   bt.mtext = MACRO_INACTIVE
   bt.itemTexture = nil
   bt.icon:SetTexture(DEFAULT_ICON)
-  --bt:SetAttribute("macrotext1", MACRO_INACTIVE)
   bt:SetAttribute("type", nil)
   bt:SetAttribute("spell", nil)
   bt:SetAttribute("target-item", nil)
   bt:SetAttribute("item", nil)
   self:ButtonCount(bt.itemCount)
   self.ActionButton_HideOverlayGlow(bt)
-  --ActionButton_HideOverlayGlow(bt)
-  if FastOpen.AceDB.profile.visible then  -- show fake button, instead hide.
+  if FastOpen.AceDB.profile.visible then
     if not (bt:IsShown() or bt:IsVisible()) then bt:Show() end
   else
     if bt:IsShown() or bt:IsVisible() then bt:Hide() end
   end
 end
-function FastOpen:ButtonHotKey(key) -- abbreviation for hotkey string
+function FastOpen:ButtonHotKey(key)
   if key and (string.len(key) > 0) then
     key = key:gsub('ALT%-', 'A')
     key = key:gsub('CTRL%-', 'C')
@@ -406,10 +386,9 @@ function FastOpen:ButtonHotKey(key) -- abbreviation for hotkey string
   end
   return key
 end
-function FastOpen:ButtonOnUpdate(bt,start,duration) -- setup timer on button
-  if not bt.timer then return end -- timer text is not defined
+function FastOpen:ButtonOnUpdate(bt,start,duration)
+  if not bt.timer then return end
   if (start > 0) and (duration > 0) then
-    -- print("start",start,"duration",duration)
     local expire = start + duration
     if bt.expire == nil or bt.expire < expire then
       bt.expire = expire
@@ -419,7 +398,7 @@ function FastOpen:ButtonOnUpdate(bt,start,duration) -- setup timer on button
         self.update = self.update - elapsed
         if (self.update < 0) then
           if self.itemID and self:IsShown() then
-            local start, duration, enable = GetItemCooldown(self.itemID) -- item on button could be another one than when timer started
+            local start, duration, enable = GetItemCooldown(self.itemID)
             local cd = 0
             if (start > 0) and (duration > 0) then cd = (start - GetTime()) + duration end
             if (cd > 0) then
@@ -437,7 +416,6 @@ function FastOpen:ButtonOnUpdate(bt,start,duration) -- setup timer on button
     end
   end
 end
--- Snip code from blizzard .XML source to prevent taint
 local unusedOverlayGlows = {}
 local numOverlays = 0
 function FastOpen.ActionButton_GetOverlayGlow()
@@ -453,13 +431,11 @@ function FastOpen.ActionButton_ShowOverlayGlow(self)
     self.overlay = FastOpen.ActionButton_GetOverlayGlow()
     local frameWidth, frameHeight = self:GetSize()
     self.overlay:SetParent(self)
-    SetOutside(self.overlay,self,frameWidth/3, frameHeight/3) -- adopted from ElvUI to glow outside
+    SetOutside(self.overlay,self,frameWidth/3, frameHeight/3)
   end
-  --if not self.overlay:IsShown() then
   self.overlay:Show()
   self.overlay.ProcStartAnim:Stop()
   self.overlay.ProcStartAnim:Play()
-  --end
 end
 function FastOpen.ActionButton_HideOverlayGlow(self)
   if self.overlay then

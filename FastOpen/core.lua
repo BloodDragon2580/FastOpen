@@ -50,7 +50,7 @@ local table = _G.table; assert(table ~= nil,'table')
 
 local ADDON, P = ...
 local FastOpen = LibStub("AceAddon-3.0"):GetAddon(ADDON)
---
+
 local ARCHAELOGY_ANNOUNCE = P.ARCHAELOGY_ANNOUNCE; assert(ARCHAELOGY_ANNOUNCE ~= nil,'ARCHAELOGY_ANNOUNCE')
 local ARTIFACT_ANNOUNCE = P.ARTIFACT_ANNOUNCE; assert(ARTIFACT_ANNOUNCE ~= nil,'ARTIFACT_ANNOUNCE')
 local CB_CVAR = P.CB_CVAR; assert(CB_CVAR ~= nil,'CB_CVAR')
@@ -65,7 +65,7 @@ local TALENT_ANNOUNCE = P.TALENT_ANNOUNCE; assert(TALENT_ANNOUNCE ~= nil,'TALENT
 local TOGO_ANNOUNCE = P.TOGO_ANNOUNCE; assert(TOGO_ANNOUNCE ~= nil,'TOGO_ANNOUNCE')
 local whoCalls = P.whoCalls; assert(whoCalls ~= nil,'whoCalls')
 local WORK_ANNOUNCE = P.WORK_ANNOUNCE; assert(WORK_ANNOUNCE ~= nil,'WORK_ANNOUNCE')
-local LIB_MASQUE = P.LIB_MASQUE; -- this one could not exist
+local LIB_MASQUE = P.LIB_MASQUE;
 local LIB_QUESTITEM = P.LIB_QUESTITEM; assert(LIB_QUESTITEM ~= nil,'LIB_QUESTITEM')
 local print = P.print; assert(print ~= nil,'print')
 local T_BLACKLIST = P.T_BLACKLIST; assert(T_BLACKLIST ~= nil,'T_BLACKLIST')
@@ -75,30 +75,30 @@ local T_RECIPES_FIND = P.T_RECIPES_FIND; assert(T_RECIPES_FIND ~= nil,'T_RECIPES
 local T_REPS = P.T_REPS; assert(T_REPS ~= nil,'T_REPS')
 local T_SPELL_FIND = P.T_SPELL_FIND; assert(T_SPELL_FIND ~= nil,'T_SPELL_FIND')
 local T_USE = P.T_USE; assert(T_USE ~= nil,'T_USE')
-local VALIDATE = P.VALIDATE -- this can be null or false
+local VALIDATE = P.VALIDATE
 local TIMER_IDLE = P.TIMER_IDLE; assert(TIMER_IDLE ~= nil,'TIMER_IDLE')
 local LIB_WAGO_ANALYTICS = P.LIB_WAGO_ANALYTICS; assert(LIB_WAGO_ANALYTICS ~= nil,'LIB_WAGO_ANALYTICS')
---
-function FastOpen:Verbose(...) -- if verbose then output
+
+function FastOpen:Verbose(...)
   if FastOpen.AceDB.profile.verbose then print(...) end
 end
-function FastOpen:OnInitialize() -- app initialize
-  self:InitEvents() -- register events
-  self:ProfileLoad() -- initialize AceDB
-  self:OptionsLoad() -- initialize AceConfig
+function FastOpen:OnInitialize()
+  self:InitEvents()
+  self:ProfileLoad()
+  self:OptionsLoad()
 end
-function FastOpen:OnEnable() -- add-on enable
-  self.masque = LIB_MASQUE and LIB_MASQUE:Group(ADDON) -- when user has installed Masque addon, then skinnig is done by Masque save new group pointer
+function FastOpen:OnEnable()
+  self.masque = LIB_MASQUE and LIB_MASQUE:Group(ADDON)
   LIB_QUESTITEM.RegisterCallback(self, "LibQuestItem_Update","QBUpdate")
 end
-function FastOpen:TooltipCreate(name) -- create tooltip frame
+function FastOpen:TooltipCreate(name)
   local frame
-  if _G[name] and _G[name].SetOwner then -- test if frame exist, workaround for broken tooltip, no need create new tooltip frame, reuse old one
+  if _G[name] and _G[name].SetOwner then
     frame = _G[name]
   else
-    frame = CreateFrame("GameTooltip",name,nil,"GameTooltipTemplate") -- create new frame
+    frame = CreateFrame("GameTooltip",name,nil,"GameTooltipTemplate")
   end
-  frame:SetOwner(UIParent,"ANCHOR_NONE") -- frame out of screen and start updating
+  frame:SetOwner(UIParent,"ANCHOR_NONE")
   return frame
 end
 function FastOpen:GetLinesFromTooltipData(tooltipData)
@@ -122,14 +122,14 @@ function FastOpen:GetTooltipLinesBySpellID(spellID)
   return FastOpen:GetLinesFromTooltipData(tooltipData)
 end
 local tItemRetry = {}
-function FastOpen:ItemLoad() -- load template item tooltips
+function FastOpen:ItemLoad()
   local itemRetry = nil
   self:Profile(true)
-  local nCB = tonumber(GetCVar(CB_CVAR)) -- if colorblind mode activated then on 2nd line there is extra info
+  local nCB = tonumber(GetCVar(CB_CVAR))
   for itemID, data in pairs(FastOpen.T_RECIPES) do
-    if not T_RECIPES_FIND[itemID] then -- need fill pattern
-      local name = GetItemInfo(itemID) -- query or fill client side cache
-      if type(name) ~= 'string' or name == '' then -- item has no info on client side yet, let wait for server
+    if not T_RECIPES_FIND[itemID] then
+      local name = GetItemInfo(itemID)
+      if type(name) ~= 'string' or name == '' then
         if VALIDATE then
           local retry = tItemRetry[itemID] or 0
           retry = retry + 1
@@ -139,15 +139,15 @@ function FastOpen:ItemLoad() -- load template item tooltips
         itemRetry = itemID
       else
         local c,pattern,zone,map,faction = unpack(data,1,5)
-        if (c[2] == PRI_REP) and faction then T_REPS[name] = faction end -- fill-up item name to faction table
+        if (c[2] == PRI_REP) and faction then T_REPS[name] = faction end
         local lines = FastOpen:GetTooltipLinesByID(itemID)
         local count = #lines
-        if count > 1 then -- I must have at least 2 lines in tooltip
+        if count > 1 then
           if type(pattern) == "number" then
             if count >= (pattern + nCB) then
-              local i = pattern + ((pattern == 1) and 0 or nCB) -- if we are on line 1, we still want line 1. line 2 needs to be skipped, as it contains rarity information
+              local i = pattern + ((pattern == 1) and 0 or nCB)
               local text = lines[i] and lines[i].leftText or "none"
-              if text and (text ~= "none") and (text ~= "") and not string.find(text,'100') then -- bandaid for incomplete tooltip
+              if text and (text ~= "none") and (text ~= "") and not string.find(text,'100') then
                 T_RECIPES_FIND[itemID] = {c,text,zone,map,faction}
               else
                 if VALIDATE then
@@ -169,7 +169,7 @@ function FastOpen:ItemLoad() -- load template item tooltips
             end
           elseif type(pattern) == "string" then
             local heading = lines[1] and lines[1].leftText
-            if heading then -- look in 1st line
+            if heading then
               local compare = gsub(heading,pattern,"%1")
               if compare and (compare ~= heading) and (compare ~= "") then
                 T_RECIPES_FIND[itemID] = {c,compare,zone,map,faction}
@@ -184,7 +184,7 @@ function FastOpen:ItemLoad() -- load template item tooltips
               end
             end
           end
-        else -- in normal case this code can't be reached if yes something is broken
+        else
           if VALIDATE then
             local retry = tItemRetry[itemID] or 0
             retry = retry + 1
@@ -197,18 +197,18 @@ function FastOpen:ItemLoad() -- load template item tooltips
     end
   end
   self:Profile(false)
-  if itemRetry then self:TimerFire("ItemLoad", P.TIMER_IDLE) end -- else if VALIDATE then for k,d in pairs(T_RECIPES_FIND) do print("ItemLoad:",k,"Pattern:",d[2]) end end end
+  if itemRetry then self:TimerFire("ItemLoad", P.TIMER_IDLE) end
   self.itemLoad = true
 end
 local spellLoaded = {}
 local tSpellRetry = {}
 local T_SPELL_BY_NAME = FastOpen.T_SPELL_BY_NAME; assert(T_SPELL_BY_NAME ~= nil,'T_SPELL_BY_NAME')
-function FastOpen:SpellLoad() -- load spell patterns
+function FastOpen:SpellLoad()
   local spellRetry = nil
   self:Profile(true)
   for itemID,data in pairs(T_SPELL_BY_NAME) do
-    if not spellLoaded[itemID] then -- not in local cache yet
-      local name = GetItemInfo(itemID) -- 1st fetch item into cache
+    if not spellLoaded[itemID] then
+      local name = GetItemInfo(itemID)
       if type(name) ~= 'string' or name == '' then
         if VALIDATE then
           local retry = tSpellRetry[itemID] or 0
@@ -218,11 +218,11 @@ function FastOpen:SpellLoad() -- load spell patterns
         end
         spellRetry = itemID
       else 
-        local spell = GetItemSpell(itemID) -- now query if it has spell
+        local spell = GetItemSpell(itemID)
         if type(spell) == 'string' and spell ~= "" then
           T_SPELL_FIND[spell] = data
           spellLoaded[itemID] = spell
-        else -- in normal case this code can't be rached because tables are validated
+        else
           if VALIDATE then print("GetItemSpell() no spell for",itemID, name, GetItemInfo(itemID)) end
           spellRetry = itemID
         end
@@ -233,31 +233,31 @@ function FastOpen:SpellLoad() -- load spell patterns
     end
   end
   self:Profile(false)
-  if spellRetry then self:TimerFire("SpellLoad", TIMER_IDLE) end -- it is even driven, but who trust Blizzard's API?
+  if spellRetry then self:TimerFire("SpellLoad", TIMER_IDLE) end
   self.spellLoad = true
 end
-function FastOpen:PickLockUpdate() -- rogue picklocking
-  if IsPlayerSpell(SPELL_PICKLOCK) then -- have it in spellbook?
-    local lines = FastOpen:GetTooltipLinesBySpellID(SPELL_PICKLOCK) -- Fills the tooltip with information about a spell specified by ID
+function FastOpen:PickLockUpdate()
+  if IsPlayerSpell(SPELL_PICKLOCK) then
+    local lines = FastOpen:GetTooltipLinesBySpellID(SPELL_PICKLOCK)
     local count = #lines
     if count > 3 then
-      local text = lines[4] and lines[4].leftText -- 4th line contains actual level of picklocking
+      local text = lines[4] and lines[4].leftText
       if text and text ~= "" then
-        self.pickLockLevel = tonumber(string.match(text,"%d+")) -- /run local level = string.match("blabla 500.","%d+"); print(level)
+        self.pickLockLevel = tonumber(string.match(text,"%d+"))
         if self.pickLockLevel then
-          self.pickLockSpell = GetSpellInfo(SPELL_PICKLOCK) -- save name for later use
+          self.pickLockSpell = GetSpellInfo(SPELL_PICKLOCK)
         else
-          print("Can't determine level of",GetSpellInfo(SPELL_PICKLOCK),"unexpected formating of tooltip!",text) -- diagnostic
+          print("Can't determine level of",GetSpellInfo(SPELL_PICKLOCK),"unexpected formating of tooltip!",text)
         end
       end
     else
-      self:Verbose("Tooltip has less lines than expected, has", count, "instead more than 3.") -- diagnostic
+      self:Verbose("Tooltip has less lines than expected, has", count, "instead more than 3.")
     end
   end
 end
-function FastOpen:PrintTooltip(tooltipLines) -- dump tooltip in chat frame
+function FastOpen:PrintTooltip(tooltipLines)
   if not tooltipLines then return end
-  for i=1,#tooltipLines do -- scan all lines in tooltip
+  for i=1,#tooltipLines do
     local line = tooltipLines[i]
     if tooltipLines[i].leftText then
       local r,g,b,a = tooltipLines[i].leftColor:GetRGBAAsBytes()
@@ -271,14 +271,14 @@ function FastOpen:PrintTooltip(tooltipLines) -- dump tooltip in chat frame
     end
   end
 end
-function FastOpen:BlacklistClear() -- reset temporary blacklist
-  if not FastOpen.AceDB.profile.Skip and T_BLACKLIST and T_BLACKLIST[0] then -- have blacklisted items and is not session sticky, lets erase blacklist and check again
-    wipe(T_BLACKLIST) -- empty list
+function FastOpen:BlacklistClear()
+  if not FastOpen.AceDB.profile.Skip and T_BLACKLIST and T_BLACKLIST[0] then
+    wipe(T_BLACKLIST)
     wipe(T_CHECK)
     return true
   end
 end
-function FastOpen:BlacklistReset() -- reset permanent blacklist
+function FastOpen:BlacklistReset()
   if (type(FastOpen.AceDB.profile.T_BLACKLIST) == "table") then
     wipe(FastOpen.AceDB.profile.T_BLACKLIST)
   else
@@ -292,7 +292,7 @@ function FastOpen:BlacklistReset() -- reset permanent blacklist
   wipe(T_CHECK)
   self:BAG_UPDATE()
 end
-function FastOpen:BlacklistItem(isPermanent,itemID) -- right click will add item into blacklist
+function FastOpen:BlacklistItem(isPermanent,itemID)
   if itemID then
     local name = GetItemInfo(itemID)
     if isPermanent then
@@ -303,7 +303,7 @@ function FastOpen:BlacklistItem(isPermanent,itemID) -- right click will add item
       print(L["PERMA_BLACKLIST"],name or itemID)
     else
       if not (type(T_BLACKLIST) == "table") then T_BLACKLIST = {} end
-      T_BLACKLIST[0] = true -- blacklist is defined
+      T_BLACKLIST[0] = true
       T_BLACKLIST[itemID] = true
       LIB_WAGO_ANALYTICS:IncrementCounter("PermanentBlacklistItem")
       if FastOpen.AceDB.profile.Skip then
@@ -315,9 +315,9 @@ function FastOpen:BlacklistItem(isPermanent,itemID) -- right click will add item
     T_USE[itemID] = nil; T_CHECK[itemID] = nil
   end
 end
-function FastOpen:Profile(onStart) -- time profiling
+function FastOpen:Profile(onStart)
   if not self.profileOn then return end
-  if not self.profileSession then self.profileSession = GetTime() end -- start of session
+  if not self.profileSession then self.profileSession = GetTime() end
   if onStart then
     self.profileCount = (self.profileCount or 0) + 1
     self.profileTP = debugprofilestop()
@@ -327,10 +327,10 @@ function FastOpen:Profile(onStart) -- time profiling
   if self.profileMaxRun == nil or self.profileMaxRun < elapsed then self.profileMaxRun = elapsed end
   self.profileTotal = (self.profileTotal or 0) + elapsed
 end
-function FastOpen:inCombat() -- combat lockdown
+function FastOpen:inCombat()
   return InCombatLockdown()
 end
-function FastOpen:SecondsToString(s) -- return delta, time-string
+function FastOpen:SecondsToString(s)
   local nH = math.floor(s/3600)
   local nM = math.floor(s/60 - nH*60)
   local nS = math.floor(s - nH*3600 - nM*60)
@@ -339,7 +339,7 @@ function FastOpen:SecondsToString(s) -- return delta, time-string
   if s > 9.9 then return  1,string.format("%.0f",s); end
   return 0.1, string.format("%.1f",s)
 end
-function FastOpen:removekey(t, key) -- remove item in hash table by key
+function FastOpen:removekey(t, key)
   if t and key and (type(t) == "table") and (t[key] ~= nil) then
     local element = t[key]
     t[key] = nil
@@ -348,10 +348,10 @@ function FastOpen:removekey(t, key) -- remove item in hash table by key
   return nil
 end
 local HERALD_ANNOUNCED = {}
-function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page) and annonce
+function FastOpen:CheckBuilding(toCheck)
   if not FastOpen.AceDB.profile.herald then return end
   if toCheck then C_Garrison.RequestLandingPageShipmentInfo(); return; end
-  if C_Garrison.HasGarrison(LE_GARRISON_TYPE_6_0) then -- garrison shipments
+  if C_Garrison.HasGarrison(LE_GARRISON_TYPE_6_0) then
     local buildings = C_Garrison.GetBuildings(LE_GARRISON_TYPE_6_0)
     local numBuildings = #buildings
     if(numBuildings > 0) then
@@ -367,8 +367,8 @@ function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page)
       end
     end
   end
-  if C_Garrison.HasGarrison(LE_GARRISON_TYPE_7_0) then -- Order hall
-    local followerShipments = C_Garrison.GetFollowerShipments(LE_GARRISON_TYPE_7_0) -- troops ready
+  if C_Garrison.HasGarrison(LE_GARRISON_TYPE_7_0) then
+    local followerShipments = C_Garrison.GetFollowerShipments(LE_GARRISON_TYPE_7_0)
     if followerShipments then
       for i = 1, #followerShipments do
         if not HERALD_ANNOUNCED[followerShipments[i]] then
@@ -380,7 +380,7 @@ function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page)
         end
       end
     end
-    local looseShipments = C_Garrison.GetLooseShipments(LE_GARRISON_TYPE_7_0) -- research
+    local looseShipments = C_Garrison.GetLooseShipments(LE_GARRISON_TYPE_7_0)
     if looseShipments then
       for i = 1, #looseShipments do
         if not HERALD_ANNOUNCED[looseShipments[i]] then
@@ -392,7 +392,7 @@ function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page)
         end
       end
     end
-    local talentTrees = C_Garrison.GetTalentTreeIDsByClassID(LE_GARRISON_TYPE_7_0, select(3, UnitClass("player"))) -- orderhall talents
+    local talentTrees = C_Garrison.GetTalentTreeIDsByClassID(LE_GARRISON_TYPE_7_0, select(3, UnitClass("player")))
     if talentTrees then
       local completeTalentID = C_Garrison.GetCompleteTalent(LE_GARRISON_TYPE_7_0)
       if completeTalentID and not HERALD_ANNOUNCED[completeTalentID] then
@@ -410,7 +410,7 @@ function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page)
         local treeInfo = C_Garrison.GetTalentTreeInfo(treeID)
         for talentIndex, talent in ipairs(treeInfo.talents) do
           if talent.selected and not HERALD_ANNOUNCED[talent.perkSpellID] and FastOpen.T_INSTA_WQ[talent.perkSpellID] then
-            local ability = GetSpellInfo(talent.perkSpellID) -- spell name
+            local ability = GetSpellInfo(talent.perkSpellID)
             local _, duration = GetSpellCooldown(talent.perkSpellID)
             local count = GetItemCount(FastOpen.T_INSTA_WQ[talent.perkSpellID])
             local name = GetItemInfo(FastOpen.T_INSTA_WQ[talent.perkSpellID])
@@ -423,15 +423,15 @@ function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page)
         end
       end
     end    
-  end -- /run local _, _, t = C_Garrison.GetTalentTreeInfoForID(119); for a,b in ipairs(t) do print(a, b.selected, b.perkSpellID) end
-  for i = 1, GetNumArchaeologyRaces() do -- archaelogy can be completed
+  end
+  for i = 1, GetNumArchaeologyRaces() do
     local raceName, _, _, have, required = GetArchaeologyRaceInfo(i)
     if raceName and (required > 0) and (have >= required) and not HERALD_ANNOUNCED[raceName] then
       self:PrintToActive((ARCHAELOGY_ANNOUNCE):format(raceName))
       HERALD_ANNOUNCED[raceName] = true
     end
   end
-  if not HERALD_ANNOUNCED["shipyard"] then -- shipyard missing ships
+  if not HERALD_ANNOUNCED["shipyard"] then
     local activeShips, maxShips = C_Garrison.GetNumFollowers(LE_FOLLOWER_TYPE_SHIPYARD_6_2), 0
     local _,_,_,_,_,shipyardRank = C_Garrison.GetOwnedBuildingInfo(98)
     if shipyardRank == 1 then 
@@ -468,7 +468,7 @@ function FastOpen:CheckBuilding(toCheck) -- recheck (force request landing page)
   end
   if #paragon > 0 then self:PrintToActive((REWARD_ANNOUNCE):format(table.concat(paragon,PLAYER_LIST_DELIMITER))) end
 end
-function FastOpen:PrintToActive(msg) -- print to all active chat windows
+function FastOpen:PrintToActive(msg)
   local ElvUI = _G.ElvUI
   if msg then
     local txt = ("|cff7f7f7f%s|r [|cff007f7f%s|r]" .. " %s"):format(ElvUI and "" or ("[" .. date("%H:%M") .. "]"),ADDON,msg)
@@ -480,13 +480,13 @@ function FastOpen:PrintToActive(msg) -- print to all active chat windows
     end
   end
 end
-function FastOpen:CompressText(text) -- printable
-  text = string.gsub(text, "\n", "/n") -- novy radek
-  text = string.gsub(text, "/n$", "") -- novy radek na konci zahodit
-  text = string.gsub(text, "||", "/124") -- interni formatovani WoW
+function FastOpen:CompressText(text)
+  text = string.gsub(text, "\n", "/n")
+  text = string.gsub(text, "/n$", "")
+  text = string.gsub(text, "||", "/124")
   return string.trim(text)
 end
-function FastOpen:GetReputation(name) -- reputation standing with paragon reward check
+function FastOpen:GetReputation(name)
   local fID = T_REPS[name]; if not fID then return end
   local _, _, level, _, top, value = GetFactionInfoByID(fID)
   local reward
@@ -494,11 +494,11 @@ function FastOpen:GetReputation(name) -- reputation standing with paragon reward
   return level, top, value, reward
 end
 local T_timers = {}
-function FastOpen:TimerFire(name,period,...) -- timer without overlap
+function FastOpen:TimerFire(name,period,...)
   if not (type(period) == 'number' and period > 0) then whoCalls('Period must be a number greater than zero ' .. period); return; end
-  if not (T_timers[name] and (self:TimeLeft(T_timers[name]) > 0)) then T_timers[name] = self:ScheduleTimer(name,period,...) end -- schedule when timer with this name is not running
+  if not (T_timers[name] and (self:TimeLeft(T_timers[name]) > 0)) then T_timers[name] = self:ScheduleTimer(name,period,...) end
 end
-function FastOpen:TimerCancel(name) -- cancel timer by name
+function FastOpen:TimerCancel(name)
   local timer = T_timers[name]
   if (timer and (self:TimeLeft(timer) > 0)) then self:CancelTimer(timer) end
 end

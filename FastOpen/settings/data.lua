@@ -1326,7 +1326,16 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [223904] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Cogwheel Gem
   [223905] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Meta Gem
 
-  
+  -- 11.0
+  -- Crests
+  [221268] = {{1,PRI_OPEN},nil,nil}, -- Pouch of Weathered Harbinger Crests
+  [221373] = {{1,PRI_OPEN},nil,nil}, -- Satchel of Carved Harbinger Crests
+  [220767] = {{1,PRI_OPEN},nil,nil}, -- Triumphant Satchel of Carved Harbinger Crests
+  [221375] = {{1,PRI_OPEN},nil,nil}, -- Pack of Runed Harbinger Crests
+  [220773] = {{1,PRI_OPEN},nil,nil}, -- Celebratory Pack of Runed Harbinger Crests
+  [220776] = {{1,PRI_OPEN},nil,nil}, -- Glorious Cluster of Gilded Harbinger Crests
+
   --[] = {{1,PRI_OPEN},nil,nil}, -- 
+
   
 }

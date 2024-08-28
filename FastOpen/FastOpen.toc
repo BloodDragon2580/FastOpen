@@ -2,20 +2,19 @@
 ## Title:|cffd6266cFastOpen|r
 ## Notes: Auto Open Items
 ## Author: BloodDragon2580
-## Version: 3.5
+## Version: 3.6
 ## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
 ## SavedVariables: FastOpenProfile
-## OptionalDeps: Masque, WagoAnalytics
 
 embeds.xml
 locale\locale.xml
 
-private.lua
-data.lua 
-button.lua
-profile.lua
-events.lua
+settings\private.lua
+settings\data.lua 
+settings\button.lua
+settings\profile.lua
+settings\events.lua
 core.lua
-item.lua
-slash.lua
-quest.lua
+settings\item.lua
+settings\slash.lua
+settings\quest.lua
