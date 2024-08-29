@@ -1334,6 +1334,22 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [221375] = {{1,PRI_OPEN},nil,nil}, -- Pack of Runed Harbinger Crests
   [220773] = {{1,PRI_OPEN},nil,nil}, -- Celebratory Pack of Runed Harbinger Crests
   [220776] = {{1,PRI_OPEN},nil,nil}, -- Glorious Cluster of Gilded Harbinger Crests
+  
+-- Delves
+  [225902] = {{1,PRI_OPEN},nil,nil}, -- Idol of Final Will
+  [218129] = {{1,PRI_OPEN},nil,nil}, -- Porcelain Arrowhead Idol
+  [228984] = {{1,PRI_OPEN},nil,nil}, -- Unbreakable Iron Idol
+  [225898] = {{1,PRI_OPEN},nil,nil}, -- Idol of the Earthmother
+  [229353] = {{1,PRI_OPEN},nil,nil}, -- Rage-Filled Idol
+  [225900] = {{1,PRI_OPEN},nil,nil}, -- Light-Touched Idol
+  [225908] = {{1,PRI_OPEN},nil,nil}, -- Relicblood of Zekvir
+  [225905] = {{1,PRI_OPEN},nil,nil}, -- Olden Seeker Relic
+  [225904] = {{1,PRI_OPEN},nil,nil}, -- Time Lost Relic
+  [225903] = {{1,PRI_OPEN},nil,nil}, -- Amorphous Relic
+  [228582] = {{1,PRI_OPEN},nil,nil}, -- Streamlined Relic
+  [225906] = {{1,PRI_OPEN},nil,nil}, -- Lifeless Necrotic Relic
+  [225907] = {{1,PRI_OPEN},nil,nil}, -- Relic of Sentience
+  [225249] = {{1,PRI_OPEN},nil,nil}, -- Rattling Bag o' Gold
 
   --[] = {{1,PRI_OPEN},nil,nil}, -- 
 
