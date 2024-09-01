@@ -37,6 +37,7 @@ local T_CHECK = P.T_CHECK; assert(T_CHECK ~= nil,'T_CHECK')
 local T_OPEN = P.T_OPEN; assert(T_OPEN ~= nil,'T_OPEN')
 local T_RECIPES_FIND = P.T_RECIPES_FIND; assert(T_RECIPES_FIND ~= nil,'T_RECIPES_FIND')
 local T_SPELL_FIND = P.T_SPELL_FIND; assert(T_SPELL_FIND ~= nil,'T_SPELL_FIND')
+local T_ITEM_REQUIRE_QUEST_NOT_COMPLETED = NOP.T_ITEM_REQUIRE_QUEST_NOT_COMPLETED; assert(T_ITEM_REQUIRE_QUEST_NOT_COMPLETED ~= nil,'T_ITEM_REQUIRE_QUEST_NOT_COMPLETED')
 local T_USE = P.T_USE; assert(T_USE ~= nil,'T_USE')
 local print = P.print; assert(print ~= nil,'print')
 local TIMER_IDLE = P.TIMER_IDLE; assert(TIMER_IDLE ~= nil,'TIMER_IDLE')
@@ -171,6 +172,11 @@ end
 local offset = 0
 function FastOpen:ItemToUse(itemID,count,prio,zone,map,aura,source) -- store item into table
   self:Verbose("ItemToUse:","itemID",itemID,"count",count,"prio",prio,"zone",zone,"map",map,"aura",aura,"source",source)
+  --check required quest
+  local quest = T_ITEM_REQUIRE_QUEST_NOT_COMPLETED[itemID]
+  if quest and C_QuestLog.IsQuestFlaggedCompleted(quest) then
+    return --don't show this item anymore
+  end
   local pt = T_USE[itemID]
   if not pt then -- new item
     if (self.BF and self.BF.showID == nil) and (itemID == self.AceDB.char.itemID) then -- first time looking for item then get last item from last session

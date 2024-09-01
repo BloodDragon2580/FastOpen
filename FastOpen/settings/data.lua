@@ -39,8 +39,24 @@ local SHADOWMOON_VALLEY1 = P.SHADOWMOON_VALLEY1; assert(SHADOWMOON_VALLEY1 ~= ni
 local SHADOWMOON_VALLEY3 = P.SHADOWMOON_VALLEY3; assert(SHADOWMOON_VALLEY3 ~= nil,'SHADOWMOON_VALLEY3')
 local SHADOWMOON_VALLEY3 = P.SHADOWMOON_VALLEY3; assert(SHADOWMOON_VALLEY3 ~= nil,'SHADOWMOON_VALLEY3')
 local VALDRAKKEN = P.VALDRAKKEN; assert(VALDRAKKEN ~= nil,'VALDRAKKEN')
+--local LOAMM = P.LOAMM; assert(LOAMM ~= nil,'LOAMM')
 local ISKAARA = P.ISKAARA; assert(ISKAARA ~= nil,'ISKAARA')
 --
+FastOpen.T_ITEM_REQUIRE_QUEST_NOT_COMPLETED = { -- [itemID] = questID, entries where questID needs to be not completed
+  [222548] = 83730, -- Algari Treatise on Inscription
+  [222554] = 83726, -- Algari Treatise on Blacksmithing
+  [222552] = 83729, -- Algari Treatise on Herbalism
+  [222546] = 83725, -- Algari Treatise on Alchemy
+  [222553] = 83733, -- Algari Treatise on Mining
+  [222547] = 83735, -- Algari Treatise on Tailoring
+  [222621] = 83728, -- Algari Treatise on Engineering
+  [222550] = 83727, -- Algari Treatise on Enchanting
+  [222649] = 83734, -- Algari Treatise on Skinning
+  [222551] = 83731, -- Algari Treatise on Jewelcrafting
+  [222549] = 83732, -- Algari Treatise on Leatherworking
+  
+   -- [itemID] = questID, --
+}
 FastOpen.T_INSTA_WQ = { -- [spellID] = itemID, list of OH advancements and spells for instant completion non-elite WQ
   [221602] = 140038, -- Might of Dalaran
   [221587] = 140155, -- Vanguard of the Silver Hand
@@ -103,6 +119,14 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
   --10.0 Primordial Stones
   [204573] = {{1,PRI_REP},nil,nil}, -- Opening "Condensed ... Magic"
   --10.0 Missing tokens
+  --[[
+  [203628] = {{1,PRI_REP},nil,nil}, -- "Create Spaulders"
+  [203648] = {{1,PRI_REP},nil,nil}, -- "Create Necklace"
+  [203647] = {{1,PRI_REP},nil,nil}, -- "Create Ring"
+  [203649] = {{1,PRI_REP},nil,nil}, -- "Create Trinket"
+  [203650] = {{1,PRI_REP},nil,nil}, -- "Create Weapon"
+  [203630] = {{1,PRI_REP},nil,nil}, -- "Create Bracers"
+  --]]
   --10.1
   [205250] = {{1,PRI_OPEN},nil,nil}, -- Loamm Niffen Valuable
   [205991] = {{1,PRI_OPEN},nil,nil}, -- Loamm Niffen - Symbol of Friendship
@@ -1327,6 +1351,8 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [223905] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Meta Gem
 
   -- 11.0
+  -- Sparks
+  [211297] = {{2,PRI_OPEN},nil,nil}, -- Fractured Spark of Omens
   -- Crests
   [221268] = {{1,PRI_OPEN},nil,nil}, -- Pouch of Weathered Harbinger Crests
   [221373] = {{1,PRI_OPEN},nil,nil}, -- Satchel of Carved Harbinger Crests
@@ -1334,8 +1360,8 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [221375] = {{1,PRI_OPEN},nil,nil}, -- Pack of Runed Harbinger Crests
   [220773] = {{1,PRI_OPEN},nil,nil}, -- Celebratory Pack of Runed Harbinger Crests
   [220776] = {{1,PRI_OPEN},nil,nil}, -- Glorious Cluster of Gilded Harbinger Crests
-  
--- Delves
+
+  -- Delves
   [225902] = {{1,PRI_OPEN},nil,nil}, -- Idol of Final Will
   [218129] = {{1,PRI_OPEN},nil,nil}, -- Porcelain Arrowhead Idol
   [228984] = {{1,PRI_OPEN},nil,nil}, -- Unbreakable Iron Idol
@@ -1351,7 +1377,19 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [225907] = {{1,PRI_OPEN},nil,nil}, -- Relic of Sentience
   [225249] = {{1,PRI_OPEN},nil,nil}, -- Rattling Bag o' Gold
 
-  --[] = {{1,PRI_OPEN},nil,nil}, -- 
+  -- Contracts
+  [222597] = {{1,PRI_OPEN},nil,nil,-454931}, -- Contract: Council of Dornogal
+  [222598] = {{1,PRI_OPEN},nil,nil,-454932}, -- Contract: Council of Dornogal
+  [222599] = {{1,PRI_OPEN},nil,nil,-454933}, -- Contract: Council of Dornogal
+  [222600] = {{1,PRI_OPEN},nil,nil,-454934}, -- Contract: Assembly of the Deeps
+  [222601] = {{1,PRI_OPEN},nil,nil,-454935}, -- Contract: Assembly of the Deeps
+  [222602] = {{1,PRI_OPEN},nil,nil,-454936}, -- Contract: Assembly of the Deeps
+  [222603] = {{1,PRI_OPEN},nil,nil,-454937}, -- Contract: Hallowfall Arathi
+  [222604] = {{1,PRI_OPEN},nil,nil,-454938}, -- Contract: Hallowfall Arathi
+  [222605] = {{1,PRI_OPEN},nil,nil,-454939}, -- Contract: Hallowfall Arathi
+  [222606] = {{1,PRI_OPEN},nil,nil,-454940}, -- Contract: The Severed Threads
+  [222607] = {{1,PRI_OPEN},nil,nil,-454941}, -- Contract: The Severed Threads
+  [222608] = {{1,PRI_OPEN},nil,nil,-454942}, -- Contract: The Severed Threads
 
-  
+  --[] = {{1,PRI_OPEN},nil,nil}, --
 }
