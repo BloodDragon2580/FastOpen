@@ -1375,21 +1375,22 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [228582] = {{1,PRI_OPEN},nil,nil}, -- Streamlined Relic
   [225906] = {{1,PRI_OPEN},nil,nil}, -- Lifeless Necrotic Relic
   [225907] = {{1,PRI_OPEN},nil,nil}, -- Relic of Sentience
+  [229899] = {{100,PRI_OPEN},nil,nil}, -- Coffer Key Shard
   [225249] = {{1,PRI_OPEN},nil,nil}, -- Rattling Bag o' Gold
 
   -- Contracts
-  [222597] = {{1,PRI_OPEN},nil,nil,-454931}, -- Contract: Council of Dornogal
-  [222598] = {{1,PRI_OPEN},nil,nil,-454932}, -- Contract: Council of Dornogal
-  [222599] = {{1,PRI_OPEN},nil,nil,-454933}, -- Contract: Council of Dornogal
-  [222600] = {{1,PRI_OPEN},nil,nil,-454934}, -- Contract: Assembly of the Deeps
-  [222601] = {{1,PRI_OPEN},nil,nil,-454935}, -- Contract: Assembly of the Deeps
-  [222602] = {{1,PRI_OPEN},nil,nil,-454936}, -- Contract: Assembly of the Deeps
-  [222603] = {{1,PRI_OPEN},nil,nil,-454937}, -- Contract: Hallowfall Arathi
-  [222604] = {{1,PRI_OPEN},nil,nil,-454938}, -- Contract: Hallowfall Arathi
-  [222605] = {{1,PRI_OPEN},nil,nil,-454939}, -- Contract: Hallowfall Arathi
-  [222606] = {{1,PRI_OPEN},nil,nil,-454940}, -- Contract: The Severed Threads
-  [222607] = {{1,PRI_OPEN},nil,nil,-454941}, -- Contract: The Severed Threads
-  [222608] = {{1,PRI_OPEN},nil,nil,-454942}, -- Contract: The Severed Threads
+  [222597] = {{1,PRI_OPEN},nil,nil,454931}, -- Contract: Council of Dornogal
+  [222598] = {{1,PRI_OPEN},nil,nil,454932}, -- Contract: Council of Dornogal
+  [222599] = {{1,PRI_OPEN},nil,nil,454933}, -- Contract: Council of Dornogal
+  [222600] = {{1,PRI_OPEN},nil,nil,454934}, -- Contract: Assembly of the Deeps
+  [222601] = {{1,PRI_OPEN},nil,nil,454935}, -- Contract: Assembly of the Deeps
+  [222602] = {{1,PRI_OPEN},nil,nil,454936}, -- Contract: Assembly of the Deeps
+  [222603] = {{1,PRI_OPEN},nil,nil,454937}, -- Contract: Hallowfall Arathi
+  [222604] = {{1,PRI_OPEN},nil,nil,454938}, -- Contract: Hallowfall Arathi
+  [222605] = {{1,PRI_OPEN},nil,nil,454939}, -- Contract: Hallowfall Arathi
+  [222606] = {{1,PRI_OPEN},nil,nil,454940}, -- Contract: The Severed Threads
+  [222607] = {{1,PRI_OPEN},nil,nil,454941}, -- Contract: The Severed Threads
+  [222608] = {{1,PRI_OPEN},nil,nil,454942}, -- Contract: The Severed Threads
 
   --[] = {{1,PRI_OPEN},nil,nil}, --
 }
