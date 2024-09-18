@@ -158,6 +158,15 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
   [217328] = {{1,PRI_REP},nil,nil}, -- "Ephemeral Hypersphere" Fated tokens
   [217324] = {{1,PRI_REP},nil,nil}, -- "Decelerating Chronograph" Fated tokens
   
+  --11.0
+  [224982] = {{1,PRI_REP},nil,nil}, -- "Delver's Dirigible Schematic" - Interpreting
+  --Tier Tokens
+  [225617] = {{1,PRI_REP},nil,nil}, -- Blasphemer's Effigy
+  [225621] = {{1,PRI_REP},nil,nil}, -- Stalwart's Emblem
+  [225625] = {{1,PRI_REP},nil,nil}, -- Conniver's Badge
+  [225629] = {{1,PRI_REP},nil,nil}, -- Slayer's Icon
+  [225633] = {{1,PRI_REP},nil,nil}, -- Obscenity's Idol
+  
 }
 FastOpen.T_RECIPES = { -- [ItemId] = {{count_to_use,priority}, "gsub regex" | tooltip-line-number,{"sub-Zone",...},{[mapID]=true,...}, factionID}, item tooltip template only text to 1st match is compared, that mean all items of same school would be looked up.
   [153135] = {{1,PRI_TOKEN},4,nil,nil}, -- Unsullied Cloth Robes, why Blizzard did put in type of armor?
@@ -1350,6 +1359,7 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [223904] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Cogwheel Gem
   [223905] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Meta Gem
 
+
   -- 11.0
   -- Sparks
   [211297] = {{2,PRI_OPEN},nil,nil}, -- Fractured Spark of Omens
@@ -1373,8 +1383,11 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [225904] = {{1,PRI_OPEN},nil,nil}, -- Time Lost Relic
   [225903] = {{1,PRI_OPEN},nil,nil}, -- Amorphous Relic
   [228582] = {{1,PRI_OPEN},nil,nil}, -- Streamlined Relic
+  [225901] = {{1,PRI_OPEN},nil,nil}, -- Streamlined Relic
   [225906] = {{1,PRI_OPEN},nil,nil}, -- Lifeless Necrotic Relic
   [225907] = {{1,PRI_OPEN},nil,nil}, -- Relic of Sentience
+  [225897] = {{1,PRI_OPEN},nil,nil}, -- Brute Force Idol
+  [225908] = {{1,PRI_OPEN},nil,nil}, -- Relicblood of Zekvir
   [229899] = {{100,PRI_OPEN},nil,nil}, -- Coffer Key Shard
   [225249] = {{1,PRI_OPEN},nil,nil}, -- Rattling Bag o' Gold
 
@@ -1391,6 +1404,11 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [222606] = {{1,PRI_OPEN},nil,nil,454940}, -- Contract: The Severed Threads
   [222607] = {{1,PRI_OPEN},nil,nil,454941}, -- Contract: The Severed Threads
   [222608] = {{1,PRI_OPEN},nil,nil,454942}, -- Contract: The Severed Threads
-
-  --[] = {{1,PRI_OPEN},nil,nil}, --
+  
+  -- Misc
+  [217707] = {{5,PRI_OPEN},nil,nil}, -- Imperfect Null Stone
+  
+  
+  --[] = {{1,PRI_OPEN},nil,nil}, -- 
+  
 }
