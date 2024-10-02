@@ -91,7 +91,8 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
   [ 94227] = {{1,PRI_REP},nil,nil}, -- Stolen Golden Lotus Insignia
   [ 17047] = {{1,PRI_REP},nil,nil}, -- Argent Dawn Valor Token - "Increase Reputation"
   [210324] = {{1,PRI_REP},nil,nil}, -- Medal of Honor
-  
+  [213389] = {{1,PRI_OPEN},nil,nil}, -- Ancient Centaur Diary - "Breaking Down"
+
   --10.0 Misc
   [198614] = {{1,PRI_OPEN},nil,nil}, -- Soggy Clump of Darkmoon Cards
   --10.0 Rep
@@ -1358,7 +1359,17 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [223906] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Tinker Gem
   [223904] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Cogwheel Gem
   [223905] = {{1,PRI_OPEN},nil,nil}, -- Asynchronized Meta Gem
-
+  
+  --Azeronian Archives
+  [213185] = {{1,PRI_OPEN},nil,nil}, -- Dusty Centaur Tome
+  [213175] = {{1,PRI_OPEN},nil,nil}, -- Dusty Djaradin Tome
+  [213188] = {{1,PRI_OPEN},nil,nil}, -- Dusty Dracthyr Tome
+  [213187] = {{1,PRI_OPEN},nil,nil}, -- Dusty Drakonid Tome
+  [213186] = {{1,PRI_OPEN},nil,nil}, -- Dusty Niffen Tome
+  [213190] = {{1,PRI_OPEN},nil,nil}, -- Preserved Djaradin Tome
+  [213189] = {{1,PRI_OPEN},nil,nil}, -- Preserved Drakonid Tome
+  [213176] = {{1,PRI_OPEN},nil,nil}, -- Preserved Isles Tome
+  [213177] = {{1,PRI_OPEN},nil,nil}, -- Immaculate Tome
 
   -- 11.0
   -- Sparks
@@ -1407,8 +1418,63 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   
   -- Misc
   [217707] = {{5,PRI_OPEN},nil,nil}, -- Imperfect Null Stone
+
+  -- Ensembles
+  [219117] = {{1,PRI_OPEN},nil,nil}, -- Curious Peddler's Trinkets
+  [219118] = {{1,PRI_OPEN},nil,nil}, -- Peculiar Peddler's Trinkets
+  [219119] = {{1,PRI_OPEN},nil,nil}, -- Occult Peddler's Trinkets
+  [219120] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Khaki Uniform
+  [219121] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Ochre Uniform
+  [219122] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Burgundy Uniform
+  [219123] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Beige Uniform
+  [219124] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Navy Uniform
+  [219125] = {{1,PRI_OPEN},nil,nil}, -- Formed Artisan's Talent
+  [219126] = {{1,PRI_OPEN},nil,nil}, -- Woven Artisan's Talent
+  [219127] = {{1,PRI_OPEN},nil,nil}, -- Cast Artisan's Talent
+  [219128] = {{1,PRI_OPEN},nil,nil}, -- Stained Artisan's Talent
+  [219129] = {{1,PRI_OPEN},nil,nil}, -- Sooty Artisan's Talent
+  [219130] = {{1,PRI_OPEN},nil,nil}, -- Saffron Cartographer's Orientation
+  [219131] = {{1,PRI_OPEN},nil,nil}, -- Oceanic Cartographer's Orientation
+  [219132] = {{1,PRI_OPEN},nil,nil}, -- Crimson Cartographer's Orientation
+  [219133] = {{1,PRI_OPEN},nil,nil}, -- Deep Cartographer's Orientation
+  [219134] = {{1,PRI_OPEN},nil,nil}, -- Mossy Cartographer's Orientation
+  [219100] = {{1,PRI_OPEN},nil,nil}, -- Cardinal Educator's Knowledge
+  [219101] = {{1,PRI_OPEN},nil,nil}, -- Lilac Educator's Knowledge
+  [219102] = {{1,PRI_OPEN},nil,nil}, -- Leafy Educator's Knowledge
+  [219103] = {{1,PRI_OPEN},nil,nil}, -- Cobalt Educator's Knowledge
+  [219104] = {{1,PRI_OPEN},nil,nil}, -- Midnight Educator's Knowledge
+  [219105] = {{1,PRI_OPEN},nil,nil}, -- Sandy Quotidian Wear
+  [219106] = {{1,PRI_OPEN},nil,nil}, -- Maroon Quotidian Wear
+  [219107] = {{1,PRI_OPEN},nil,nil}, -- Earthy Quotidian Wear
+  [219108] = {{1,PRI_OPEN},nil,nil}, -- Umber Quotidian Wear
+  [219109] = {{1,PRI_OPEN},nil,nil}, -- Taupe Quotidian Wear
+  [219110] = {{1,PRI_OPEN},nil,nil}, -- Vermillion Patron's Elegance
+  [219111] = {{1,PRI_OPEN},nil,nil}, -- Royal Patron's Elegance
+  [219112] = {{1,PRI_OPEN},nil,nil}, -- Verdant Patron's Elegance
+  [219113] = {{1,PRI_OPEN},nil,nil}, -- Celestial Patron's Elegance
+  [219114] = {{1,PRI_OPEN},nil,nil}, -- Court Patron's Elegance
+  [219115] = {{1,PRI_OPEN},nil,nil}, -- Versatile Peddler's Trinkets
+  [219116] = {{1,PRI_OPEN},nil,nil}, -- Arcane Peddler's Trinkets
+  [219117] = {{1,PRI_OPEN},nil,nil}, -- Curious Peddler's Trinkets
+  [219118] = {{1,PRI_OPEN},nil,nil}, -- Peculiar Peddler's Trinkets
+  [219119] = {{1,PRI_OPEN},nil,nil}, -- Occult Peddler's Trinkets
+  [219120] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Khaki Uniform
+  [219121] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Ochre Uniform
+  [219122] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Burgundy Uniform
+  [219123] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Beige Uniform
+  [219124] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Navy Uniform
+  [219125] = {{1,PRI_OPEN},nil,nil}, -- Formed Artisan's Talent
+  [219126] = {{1,PRI_OPEN},nil,nil}, -- Woven Artisan's Talent
+  [219127] = {{1,PRI_OPEN},nil,nil}, -- Cast Artisan's Talent
+  [219128] = {{1,PRI_OPEN},nil,nil}, -- Stained Artisan's Talent
+  [219129] = {{1,PRI_OPEN},nil,nil}, -- Sooty Artisan's Talent
+  [219130] = {{1,PRI_OPEN},nil,nil}, -- Saffron Cartographer's Orientation
+  [219131] = {{1,PRI_OPEN},nil,nil}, -- Oceanic Cartographer's Orientation
+  [219132] = {{1,PRI_OPEN},nil,nil}, -- Crimson Cartographer's Orientation
+  [219133] = {{1,PRI_OPEN},nil,nil}, -- Deep Cartographer's Orientation
+  [219134] = {{1,PRI_OPEN},nil,nil}, -- Mossy Cartographer's Orientation
   
-  
-  --[] = {{1,PRI_OPEN},nil,nil}, -- 
-  
+
+  --[] = {{1,PRI_OPEN},nil,nil}, --
+
 }
