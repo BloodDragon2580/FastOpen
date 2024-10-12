@@ -1,5 +1,4 @@
 local _
--- global functions and variebles to locals to keep LINT happy
 local assert = _G.assert
 local LibStub = _G.LibStub; assert(LibStub ~= nil,'LibStub')
 local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER; assert(BACKPACK_CONTAINER ~= nil,'BACKPACK_CONTAINER')
@@ -26,10 +25,8 @@ local wipe = _G.wipe; assert(wipe ~= nil,'wipe')
 local GetItemCooldown = _G.GetItemCooldown or _G.C_Item.GetItemCooldown; assert(GetItemCooldown ~= nil,'GetItemCooldown')
 local UnpackAuraData = AuraUtil.UnpackAuraData; assert(UnpackAuraData ~= nil,'UnpackAuraData')
 local GetPlayerAuraBySpellID = C_UnitAuras.GetPlayerAuraBySpellID; assert(GetPlayerAuraBySpellID ~= nil,'GetPlayerAuraBySpellID')
--- local AddOn
 local ADDON, P = ...
 local FastOpen = LibStub("AceAddon-3.0"):GetAddon(ADDON)
---
 local T_BAGS = P.T_BAGS; assert(T_BAGS ~= nil,'T_BAGS')
 local T_PICK = P.T_PICK; assert(T_PICK ~= nil,'T_PICK')
 local T_BLACKLIST = P.T_BLACKLIST; assert(T_BLACKLIST ~= nil,'T_BLACKLIST')
@@ -41,13 +38,13 @@ local T_ITEM_REQUIRE_QUEST_NOT_COMPLETED = FastOpen.T_ITEM_REQUIRE_QUEST_NOT_COM
 local T_USE = P.T_USE; assert(T_USE ~= nil,'T_USE')
 local print = P.print; assert(print ~= nil,'print')
 local TIMER_IDLE = P.TIMER_IDLE; assert(TIMER_IDLE ~= nil,'TIMER_IDLE')
---
-function FastOpen:ItemIsBlacklisted(itemID) -- is item blacklisted?
+
+function FastOpen:ItemIsBlacklisted(itemID)
   if not itemID then return true end
-  if T_BLACKLIST and T_BLACKLIST[itemID] then -- temporary blacklist
+  if T_BLACKLIST and T_BLACKLIST[itemID] then
     self:Verbose("ItemIsBlacklisted:","itemID",itemID,"is temporary blacklisted")
     return true
-  elseif FastOpen.AceDB.profile["T_BLACKLIST"] and FastOpen.AceDB.profile.T_BLACKLIST[itemID] then -- Permanent blacklist
+  elseif FastOpen.AceDB.profile["T_BLACKLIST"] and FastOpen.AceDB.profile.T_BLACKLIST[itemID] then
     self:Verbose("ItemIsBlacklisted:","itemID",itemID,"is permanently blacklisted")
     return true
   elseif P.BLACKLIST[itemID] then
@@ -55,7 +52,7 @@ function FastOpen:ItemIsBlacklisted(itemID) -- is item blacklisted?
     return true
   end
 end
-function FastOpen:ItemGetSpell(itemID) -- looking for usable item by spell attached to item
+function FastOpen:ItemGetSpell(itemID)
   local spell = GetItemSpell(itemID)
   if spell and T_SPELL_FIND[spell] then
     local c, z, m = unpack(T_SPELL_FIND[spell],1,3)
@@ -63,20 +60,20 @@ function FastOpen:ItemGetSpell(itemID) -- looking for usable item by spell attac
     return c[1], c[2], z, m
   end
 end
-function FastOpen:ItemGetItem(itemID) -- looking for usable item by itemID returns (count, 2, zone, map, aura) or nil
+function FastOpen:ItemGetItem(itemID)
   local ref = FastOpen.T_ITEMS[itemID] or FastOpen.T_DISENCHANT_ITEMS[itemID]
   if not ref then return end
   local c,z,m,a = unpack(ref,1,4)
   if m and not m[self.mapID] then
     self:Verbose("ItemGetItem:","itemID",itemID,"rejected by map use")
     return 0
-  end -- map lock reject
+  end
   if a then
     local hasAura = false
     local name, icon, countAura, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellID = UnpackAuraData(GetPlayerAuraBySpellID(a))
-    if spellID and (spellID == math.abs(a)) then -- already has aura from that item
-      if (spellID == P.AURA_MINERS_COFFEE) then -- extra handling for this aura
-        if (countAura >= FastOpen.AceDB.profile.cofeeStacks) then -- it has enough of stacks?
+    if spellID and (spellID == math.abs(a)) then
+      if (spellID == P.AURA_MINERS_COFFEE) then
+        if (countAura >= FastOpen.AceDB.profile.cofeeStacks) then
           self:Verbose("ItemGetItem:","itemID",itemID,"rejected already have aura",name,"with",countAura,"stacks")
           return 0
         end
@@ -95,14 +92,14 @@ function FastOpen:ItemGetItem(itemID) -- looking for usable item by itemID retur
   self:Verbose("ItemGetItem:","itemID",itemID,"will be shown",name,"count",c[1],"prio",c[2])
   return c[1], c[2], z, m, a
 end
-function FastOpen:ItemGetLockPattern(itemID, lines) -- test tooltip for locked item
-  if FastOpen.AceDB.profile.profession and self.pickLockLevel and (#lines > 2) then -- rogue picklock in use
+function FastOpen:ItemGetLockPattern(itemID, lines)
+  if FastOpen.AceDB.profile.profession and self.pickLockLevel and (#lines > 2) then
     local locked = -1 
-    if string.match(lines[2].leftText,"^" .. LOCKED .. "$") then locked = 3 end -- LOCKED is Blizzard's UI global variable and is localized text of Locked, it must be at start of 2dn line in tooltip
-    if string.match(lines[3].leftText,"^" .. LOCKED .. "$") then locked = 4 end -- color-blind mode adds extra line
+    if string.match(lines[2].leftText,"^" .. LOCKED .. "$") then locked = 3 end
+    if string.match(lines[3].leftText,"^" .. LOCKED .. "$") then locked = 4 end
     if locked > 0 then 
-      local lockLevel = tonumber(string.match(lines[locked].leftText,"%d+")) -- this line must contain unlock level
-      if lockLevel and (self.pickLockLevel >= lockLevel) then -- I can picklock this!
+      local lockLevel = tonumber(string.match(lines[locked].leftText,"%d+"))
+      if lockLevel and (self.pickLockLevel >= lockLevel) then
         self:Verbose("ItemGetLockPattern:",itemID,"LockeLevel",lockLevel)
         T_PICK[itemID] = true
         return 1, P.PRI_OPEN
@@ -110,22 +107,20 @@ function FastOpen:ItemGetLockPattern(itemID, lines) -- test tooltip for locked i
     end
   end
 end
-function FastOpen:ItemGetPattern(itemID,bag,slot) -- looking for usable item via pattern in tooltip returns (count, 2, zone, map) or nil
+function FastOpen:ItemGetPattern(itemID,bag,slot)
   local lines = FastOpen:GetTooltipLinesByBagItem(bag, slot)
-  if (#lines < 1) then -- bug, all items should have tooltip!
-    --self.scanFrame = self:TooltipCreate(P.TOOLTIP_SCAN) -- workaround for this obscure bug is reset parent for tooltip
-    --self.scanFrame:ClearLines() -- clean tooltip frame
+  if (#lines < 1) then
     print(format("|cFFFF0000Error|r broken tooltip for |cFFFF0000%s|r itemID(%d)",GetItemInfo(itemID) or "unknown",itemID))
-    return -- invalid tooltip
+    return
   end
   local itemType, itemSubType, _, _, _, _, classID, subclassID = select(6, GetItemInfo(itemID))
   if classID == Enum.ItemClass.Miscellaneous and subclassID == Enum.ItemMiscellaneousSubclass.Mount then
     self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as MOUNT")
-    return 1, P.PRIO_OPEN --fallback for mounts
+    return 1, P.PRIO_OPEN
   end
   local n, p = self:ItemGetLockPattern(itemID, lines)
   if n and n > 0 then return n, p end
-  for i=1,#lines do -- scan all lines in tooltip
+  for i=1,#lines do
     local heading = lines[i] and lines[i].leftText
     if heading and heading ~= "" then
       if heading == ITEM_COSMETIC then
@@ -144,16 +139,15 @@ function FastOpen:ItemGetPattern(itemID,bag,slot) -- looking for usable item via
           return 0
         end
       end
-      --if classID ~= Enum.ItemClass.Weapon and classID ~= Enum.ItemClass.Armor then -- we want to check armor tokens, but illusions can trigger this... needs to be mitigated.
       if not self:IsTransmogColor(lines[i].leftColor:GetRGBAAsBytes()) then
-        for key, data in pairs(T_RECIPES_FIND) do -- /run for k,v in pairs(FastOpen.private.T_RECIPES_FIND) do print(k,'"',unpack(v,2,2),'"') end
+        for key, data in pairs(T_RECIPES_FIND) do
           local c, pattern, z, m, faction = unpack(data,1,5)
           if strfind(heading,pattern,1,true) then
-            if faction then -- faction tokens can be skipped when exalted or when paragon reward pending
+            if faction then
               local level, top, value, reward = self:GetReputation(heading)
-              if (level and (level > 7) and FastOpen.AceDB.profile.SkipExalted) or reward then return end -- already exalted with faction for this token or have reward pending
+              if (level and (level > 7) and FastOpen.AceDB.profile.SkipExalted) or reward then return end
             end
-            self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as RECIPE")
+            self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as RECIPE because of heading and pattern:",heading,pattern)
             return c[1], c[2], z, m
           end
         end
@@ -167,29 +161,28 @@ function FastOpen:ItemGetPattern(itemID,bag,slot) -- looking for usable item via
       end
     end
   end
-  return 0 -- test OK but nothing found
+  return 0
 end
 local offset = 0
-function FastOpen:ItemToUse(itemID,count,prio,zone,map,aura,source) -- store item into table
+function FastOpen:ItemToUse(itemID,count,prio,zone,map,aura,source)
   self:Verbose("ItemToUse:","itemID",itemID,"count",count,"prio",prio,"zone",zone,"map",map,"aura",aura,"source",source)
-  --check required quest
   local quest = T_ITEM_REQUIRE_QUEST_NOT_COMPLETED[itemID]
   if quest and C_QuestLog.IsQuestFlaggedCompleted(quest) then
     self:Verbose("ItemToUse:","not using item, because quest is flagged completed.","itemID",itemID)
     T_USE[itemID] = nil
-    return --don't show this item anymore
+    return
   end
   local pt = T_USE[itemID]
-  if not pt then -- new item
-    if (self.BF and self.BF.showID == nil) and (itemID == self.AceDB.char.itemID) then -- first time looking for item then get last item from last session
+  if not pt then
+    if (self.BF and self.BF.showID == nil) and (itemID == self.AceDB.char.itemID) then
       T_USE[itemID] = {count, prio, zone, map, aura, GetTime()+1.0, GetItemCount(itemID)}
     else
-      T_USE[itemID] = {count, prio, zone, map, aura, GetTime()+offset, GetItemCount(itemID)} -- seed with time
+      T_USE[itemID] = {count, prio, zone, map, aura, GetTime()+offset, GetItemCount(itemID)}
       offset = offset + 0.001
     end
     pt = T_USE[itemID]
-  else -- update item
-    if pt[7] and count and (pt[7] < count) and (GetItemCount(itemID) >= count) then pt[6] = GetTime() end -- trigger is rise count above limit
+  else
+    if pt[7] and count and (pt[7] < count) and (GetItemCount(itemID) >= count) then pt[6] = GetTime() end
     pt[1] = count
     pt[2] = prio
     if pt[3] == nil then pt[3] = zone end
@@ -198,22 +191,22 @@ function FastOpen:ItemToUse(itemID,count,prio,zone,map,aura,source) -- store ite
     pt[7] = GetItemCount(itemID)
   end
 end
-function FastOpen:ItemScan() -- /run FastOpen:ItemScan(); foreach(T_USE,print)
+function FastOpen:ItemScan()
   wipe(T_BAGS)
   for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS, 1 do
     for slot = 1, GetContainerNumSlots(bag), 1 do
       local itemID = GetContainerItemID(bag,slot)
       if (itemID ~= nil) then
-        local itemLink = GetContainerItemLink(bag,slot) -- create link from slot, it will have type of item in bags
-        T_BAGS[itemID] = {bag,slot,itemLink} -- index it for later use in macro and clear check table
+        local itemLink = GetContainerItemLink(bag,slot)
+        T_BAGS[itemID] = {bag,slot,itemLink}
       end
     end
   end
-  for key in pairs(T_CHECK) do if not T_BAGS[key] then T_CHECK[key] = nil end end -- cleanup check table
-  for key in pairs(T_USE) do if not T_BAGS[key] then T_USE[key] = nil end end  -- cleanup item table
+  for key in pairs(T_CHECK) do if not T_BAGS[key] then T_CHECK[key] = nil end end
+  for key in pairs(T_USE) do if not T_BAGS[key] then T_USE[key] = nil end end
   for itemID, data in pairs(T_BAGS) do
-    if not T_CHECK[itemID] then -- not checked before
-      T_CHECK[itemID] = true -- stop checking it except later T_USE will reset it
+    if not T_CHECK[itemID] then
+      T_CHECK[itemID] = true
       if not self:ItemIsBlacklisted(itemID) then
         local bag, slot, itemLink = unpack(data)
         if itemLink then
@@ -227,15 +220,15 @@ function FastOpen:ItemScan() -- /run FastOpen:ItemScan(); foreach(T_USE,print)
               T_USE[itemID] = nil
             end
           elseif linkType == P.ITEM_TYPE_ITEM then
-            local count, prio, zone, map, aura = self:ItemGetSpell(itemID) -- 1st lookup by spell
+            local count, prio, zone, map, aura = self:ItemGetSpell(itemID)
             if count then 
               if (count > 0) then self:ItemToUse(itemID, count, prio, zone, map, aura, "SPELL") else T_USE[itemID] = nil end
             else
-              count, prio, zone, map, aura = self:ItemGetItem(itemID) -- 2nd direct by itemID
+              count, prio, zone, map, aura = self:ItemGetItem(itemID)
               if count then 
                 if (count > 0) then self:ItemToUse(itemID, count, prio, zone, map, aura, "ITEMID") else T_USE[itemID] = nil end
               else
-                count, prio, zone, map, aura = self:ItemGetPattern(itemID,bag,slot) -- 3rd lookup by tooltip text
+                count, prio, zone, map, aura = self:ItemGetPattern(itemID,bag,slot)
                 if count then
                   if (count > 0) then self:ItemToUse(itemID, count, prio, zone, map, aura, "TOOLTIP") else T_USE[itemID] = nil end
                 else
@@ -256,10 +249,10 @@ function FastOpen:ItemScan() -- /run FastOpen:ItemScan(); foreach(T_USE,print)
     end
   end
 end
-function FastOpen:ItemIsUnusable(Red, Green, Blue, Alpha) -- test red color
+function FastOpen:ItemIsUnusable(Red, Green, Blue, Alpha)
   return (Red == 255 and Green == 32 and Blue == 32 and Alpha == 255)
 end
-function FastOpen:IsTransmogColor(Red, Green, Blue, Alpha) -- test pink color
+function FastOpen:IsTransmogColor(Red, Green, Blue, Alpha)
   return (Red == 255 and Green == 128 and Blue == 255 and Alpha == 255)
 end
 function FastOpen:ItemIsAppearanceCollected(lines)
@@ -278,27 +271,24 @@ function FastOpen:ItemIsToyCollected(lines)
   local collected = false
   for i=1,#lines do
     if (lines[i] and lines[i].leftText) == ITEM_SPELL_KNOWN then
-      --collected = true
       break
     end
   end
   return collected
 end
-function FastOpen:ItemIsUsable(itemID) -- look in tooltip if there is no red text
-  if not T_BAGS[itemID] then return end -- don't have item
+function FastOpen:ItemIsUsable(itemID)
+  if not T_BAGS[itemID] then return end
   local bag,slot,itemLink = unpack(T_BAGS[itemID])
   if itemLink then
     local _, _, linkColor, linkType, linkID = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):")
     if linkType == P.ITEM_TYPE_BATTLE_PET then return true end
   end
   local lines = FastOpen:GetTooltipLinesByBagItem(bag, slot)
-  if (#lines < 1) then -- bug, all items should have tooltip!
+  if (#lines < 1) then
     self:Verbose("ItemIsUsable:","itemID",itemID,"Empty tooltip!")
-    --self.scanFrame = self:TooltipCreate(P.TOOLTIP_SCAN) -- workaround for this obscure bug is reset parent for tooltip
-    --self.scanFrame:SetBagItem(bag, slot) -- fill up tooltip
   end
   if #lines > 0 then
-    for i=1,#lines do -- scan all lines in tooltip
+    for i=1,#lines do
       if lines[i] and lines[i].leftText then
         local text = lines[i].leftText
         if text and text ~= "" then
@@ -306,11 +296,11 @@ function FastOpen:ItemIsUsable(itemID) -- look in tooltip if there is no red tex
             self:Verbose("itemID",itemID,"has red text in tooltip!",text)
             return false
           end
-          if i == 1 then -- all faction tokens should be checked
+          if i == 1 then
             local level, top, value, reward = self:GetReputation(text)
             if level then
-              if ((level > 7) and FastOpen.AceDB.profile.SkipExalted) or reward then return false end -- already exalted or paragon reward
-              if self:ItemCD(itemID) then return false end -- CD other tokens can be used then
+              if ((level > 7) and FastOpen.AceDB.profile.SkipExalted) or reward then return false end
+              if self:ItemCD(itemID) then return false end
             end
           end
         end
@@ -330,18 +320,15 @@ function FastOpen:ItemIsUsable(itemID) -- look in tooltip if there is no red tex
   self:Verbose("ItemIsUsable:","itemID",itemID,"Empty tooltip!")
   return false
 end
-function FastOpen:ItemToPicklock(itemID) -- need to find which item really need to unlock, locked and unlocked items have same itemID
+function FastOpen:ItemToPicklock(itemID)
   if not itemID then return end
   for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS, 1 do
     for slot = 1, GetContainerNumSlots(bag), 1 do
       local id = GetContainerItemID(bag,slot)
       if (id == itemID) then
         local lines = FastOpen:GetTooltipLinesByBagItem(bag, slot)
-        if (#lines < 1) then -- bug, all items should have tooltip!
+        if (#lines < 1) then
           self:Verbose("Broken tooltip on " .. id)
-          --self.scanFrame = self:TooltipCreate(P.TOOLTIP_SCAN) -- workaround for this obscure bug is reset parent for tooltip
-          --self.scanFrame:ClearLines() -- clean tooltip frame
-          --self.scanFrame:SetBagItem(bag, slot) -- fill up tooltip
         end
         if self:ItemGetLockPattern(id, lines) then
           self:Verbose("ItemToPicklock:","Locked item",id,"bag",bag,"slot",slot)
@@ -351,21 +338,21 @@ function FastOpen:ItemToPicklock(itemID) -- need to find which item really need 
     end
   end
 end
-function FastOpen:ItemShowRestart() -- new round?
-  if self:BlacklistClear() then -- no more items to show, may be some are just temporary blacklisted
+function FastOpen:ItemShowRestart()
+  if self:BlacklistClear() then
     print(P.L["RESTARTED_LOOKUP"])
-    self:BAG_UPDATE() -- restart process
+    self:BAG_UPDATE()
   else 
     self.AceDB.char.itemID = nil
-    self:ButtonHide() -- hide button
+    self:ButtonHide()
   end
 end
-function FastOpen:ItemShow(itemID,prio) -- add item to button
+function FastOpen:ItemShow(itemID,prio)
   local bt = self.BF
   if not bt then return end
   if not itemID then self:ItemShowRestart(); return; end
   local bagID, slotID = unpack(T_BAGS[itemID])
-  if not (bagID and slotID) then -- not in correct place
+  if not (bagID and slotID) then
     self:BlacklistItem(false,itemID)
     self:ItemShowRestart()
     return
@@ -373,7 +360,7 @@ function FastOpen:ItemShow(itemID,prio) -- add item to button
   local isGlow = (prio == P.PRI_POPUP) or nil
   local itemCount = GetItemCount(itemID)
   local itemTexture = GetContainerItemInfo(bagID, slotID)
-  if not itemTexture then -- not valid item info
+  if not itemTexture then
     self:BlacklistItem(false,itemID)
     self:ItemShowRestart()
     return
@@ -381,41 +368,37 @@ function FastOpen:ItemShow(itemID,prio) -- add item to button
   if type(itemTexture) == "table" then
     itemTexture = itemTexture.iconFileID
   end
-  --local mtext = format(P.MACRO_ACTIVE,itemID)
-  --local mtarget = format("%d",itemID)
   local mtarget = format("item:%d", itemID)
-  --local mtarget = format("%d %d", bagID, slotID)
   local mtargetitem = nil
+  local mtargetbag = nil
+  local mtartgetslot = nil
   local mtype = "item"
   local mspell = nil
-  if T_PICK[itemID] then -- item has picklock in tooltip
-    local bag, slot = self:ItemToPicklock(itemID) -- find where in bags is item which still with unlock because same itemID can be unlocked or locked it depends on state of item
+  if T_PICK[itemID] then
+    local bag, slot = self:ItemToPicklock(itemID)
     if bag and slot then
       bagID = bag
       slotID = slot
       isGlow = true
-      --mtext = format(P.MACRO_PICKLOCK,self.pickLockSpell,bagID,slotID) -- this one needs unlock
       mtype = "spell"
       mspell = self.pickLockSpell
       mtarget = nil
-      mtargetitem = format("item:%d", itemID) --format("%d %d" ,bagID,slotID) -- this one needs unlock
+      mtargetitem = nil
     else
-      T_PICK[itemID] = nil -- it not require lockpick anymore
+      T_PICK[itemID] = nil
     end
   elseif FastOpen.T_DISENCHANT_ITEMS[itemID] then
     isGlow = true
-    --mtext = format(P.MACRO_DISENCHANT,itemID) -- disenchant this
     mtype = "spell"
     mspell = "Disenchant"
     mtarget = nil
-    mtargetitem =  format("item:%d", itemID) --format("%d %d" ,bagID,slotID) -- disenchant this
+    mtargetitem =  format("item:%d", itemID)
   end
-  if (bt.itemCount ~= itemCount) or (bt.itemID ~= itemID) or (bt.isGlow ~= isGlow) or (bt.mtext ~= mtext) or (bt.mtype ~= mtype) or (bt.mspell ~= mspell) or (bt.mtarget ~= mtarget) or (bt.mtargetitem ~= mtargetitem) then
+  if (bt.itemCount ~= itemCount) or (bt.itemID ~= itemID) or (bt.isGlow ~= isGlow) or (bt.mtext ~= mtext) or (bt.mtype ~= mtype) or (bt.mspell ~= mspell) or (bt.mtarget ~= mtarget) or (bt.mtargetitem ~= mtargetitem) or (bt.bagID ~= bagID) or (bt.slotID ~= slotID) then
     bt.prio = prio
     bt.showID = itemID
     bt.itemID = itemID
     bt.isGlow = isGlow
-    --bt.mtext = mtext
     bt.mtype = mtype
     bt.mspell = mspell
     bt.mtarget = mtarget
@@ -425,26 +408,26 @@ function FastOpen:ItemShow(itemID,prio) -- add item to button
     bt.itemCount = itemCount
     bt.itemTexture = itemTexture
     self.AceDB.char.itemID = itemID
-    self:ButtonShow() -- show or refresh button
+    self:ButtonShow()
   end
 end
-function FastOpen:ItemCD(itemID) -- if item is on CD let's look for another
+function FastOpen:ItemCD(itemID)
   local startTime, duration, enable = GetItemCooldown(itemID)
   return not (startTime == 0)
 end
-function FastOpen:ItemShowNew() -- check bags for usable item and place it on button
-  self.preClick = nil -- from now error won't blacklist item on button
+function FastOpen:ItemShowNew()
+  self.preClick = nil
   if self:inCombat() or not (self.spellLoad and self.itemLoad) then self:TimerFire("ItemShowNew", P.TIMER_IDLE); return end
   self:Profile(true)
-  self:ItemScan() -- rescan bags
-  local toShow, prio, stamp = nil, 0, 0 -- item for use on button
+  self:ItemScan()
+  local toShow, prio, stamp = nil, 0, 0
   for itemID, data in pairs(T_USE) do
     local c, p, z, m, a, t = unpack(data,1,6)
     local inZone = not z
-    if z then -- zone table can be {"sub-Zone","sub-Zone",...} | zoneID | {zoneID,zoneID,...}
+    if z then
       if type(z) == "table" then
         for i = 1, #z do
-          if type(z[i]) == "string" then -- sub-zone string name
+          if type(z[i]) == "string" then
             if z[i] == self.Zone then
               inZone = true
             end
@@ -455,28 +438,27 @@ function FastOpen:ItemShowNew() -- check bags for usable item and place it on bu
         p = P.PRI_POPUP
       else
         if FastOpen.AceDB.profile.zoneUnlock and not a then
-          p = p + P.PRI_SKIP -- shift priority behind items not zone locked
+          p = p + P.PRI_SKIP
           inZone = true
         else
           p = nil
         end
-      end -- zone items outside zone have lowest priority else maximal priority
+      end
     end
-    if a and (not inZone or not self:ItemGetItem(itemID)) then p = nil end -- zone items with buff only shown in proper zone and when no buff with defined stacks is on
-    if z and (not inZone) then p = nil end -- rush orders shipyard have special handling
+    if a and (not inZone or not self:ItemGetItem(itemID)) then p = nil end
+    if z and (not inZone) then p = nil end
     if m and not m[self.mapID] then
-      -- if itemID == 122594 then print(self.mapID); for k, v in pairs(m) do print(k,v) end; end
       p = nil
-    end -- map lock
+    end
     self:Verbose("ItemShowNew:","itemID",itemID,"Zone",(inZone and "yes" or "no"),"Priority",((type(p) == "number") and p or "disabled"),"Stamp",t)
-    if (type(p) == "number") and self:ItemIsUsable(itemID) and (GetItemCount(itemID) >= c) then -- have priority defined so it is candidate for button
-      if (prio == 0) then -- 1st usable item set values to compare with
+    if (type(p) == "number") and self:ItemIsUsable(itemID) and (GetItemCount(itemID) >= c) then
+      if (prio == 0) then
         toShow = itemID; prio = p; stamp = t
       else 
-        if (p < prio) then -- higher priority
+        if (p < prio) then
           toShow = itemID; prio = p; stamp = t
         else 
-          if (p == prio) and (t > stamp) then -- same priority then compate by time
+          if (p == prio) and (t > stamp) then
             toShow = itemID; prio = p; stamp = t
           end
         end
@@ -486,8 +468,8 @@ function FastOpen:ItemShowNew() -- check bags for usable item and place it on bu
   self:ItemShow(toShow,prio)
   self:Profile(false)
 end
-function FastOpen:ItemTimer() -- slow backpack recheck
-  if self:inCombat() or not (self.spellLoad and self.itemLoad) then return end -- still loading or in combat
-  wipe(T_CHECK) -- wipe cache
-  self:ZONE_CHANGED() -- set map and reset cache
+function FastOpen:ItemTimer()
+  if self:inCombat() or not (self.spellLoad and self.itemLoad) then return end
+  wipe(T_CHECK)
+  self:ZONE_CHANGED()
 end
