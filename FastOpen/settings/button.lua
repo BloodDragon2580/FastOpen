@@ -321,21 +321,29 @@ function FastOpen:ButtonShow()
   self:ButtonCount(bt.itemCount)
   bt.icon:SetTexture(bt.itemTexture or DEFAULT_ICON)
   if (bt:IsMouseMotionFocus()) then self:ButtonOnEnter(bt) end
+  
+  bt:SetAttribute("macrotext1", nil)
+  bt:SetAttribute("type", nil)
+  bt:SetAttribute("spell", nil)
+  bt:SetAttribute("target-item", nil)
+  bt:SetAttribute("item", nil)
+  
   if bt.itemTexture then
-    bt:SetAttribute("type", bt.mtype)
-    bt:SetAttribute("spell", bt.mspell)
-    bt:SetAttribute("item", bt.mtarget)
-    bt:SetAttribute("target-item", bt.mtargetitem)
-    if bt.mspell then
-      bt:SetAttribute("target-bag", bt.bagID)
-      bt:SetAttribute("target-slot", bt.slotID)
+    if bt.mtext then
+      bt:SetAttribute("type1", "macro")
+      bt:SetAttribute("macrotext1", bt.mtext)
+      self:Verbose("ButtonShow:","macro text",self:CompressText(bt.mtext))
+    else
+      bt:SetAttribute("type", bt.mtype)
+      bt:SetAttribute("spell", bt.mspell)
+      bt:SetAttribute("item", bt.mtarget)
+      bt:SetAttribute("target-item", bt.mtargetitem)
+      if bt.mspell then
+        bt:SetAttribute("target-bag", bt.bagID)
+        bt:SetAttribute("target-slot", bt.slotID)
+      end
+      self:Verbose("ButtonShow:",self:CompressText(bt.mtype),bt.mspell and self:CompressText(bt.mspell),bt.mtarget and self:CompressText("item: " .. bt.mtarget),bt.mtargetitem and self:CompressText("target-item: " .. bt.mtargetitem))
     end
-    self:Verbose("ButtonShow:",self:CompressText(bt.mtype),bt.mspell and self:CompressText(bt.mspell),bt.mtarget and self:CompressText("item: " .. bt.mtarget),bt.mtargetitem and self:CompressText("target-item: " .. bt.mtargetitem))
-  else
-    bt:SetAttribute("type", nil)
-    bt:SetAttribute("spell", nil)
-    bt:SetAttribute("target-item", nil)
-    bt:SetAttribute("item", nil)
   end
   if not (bt:IsVisible() or bt:IsShown()) then bt:Show() end
   if FastOpen.AceDB.profile.glowButton and bt.isGlow then

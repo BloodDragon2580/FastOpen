@@ -368,6 +368,7 @@ function FastOpen:ItemShow(itemID,prio)
   if type(itemTexture) == "table" then
     itemTexture = itemTexture.iconFileID
   end
+  local mtext = nil
   local mtarget = format("item:%d", itemID)
   local mtargetitem = nil
   local mtargetbag = nil
@@ -380,6 +381,7 @@ function FastOpen:ItemShow(itemID,prio)
       bagID = bag
       slotID = slot
       isGlow = true
+      mtext = nil
       mtype = "spell"
       mspell = self.pickLockSpell
       mtarget = nil
@@ -389,16 +391,20 @@ function FastOpen:ItemShow(itemID,prio)
     end
   elseif FastOpen.T_DISENCHANT_ITEMS[itemID] then
     isGlow = true
+    mtext = nil
     mtype = "spell"
     mspell = "Disenchant"
     mtarget = nil
     mtargetitem =  format("item:%d", itemID)
+  elseif C_Item.IsDressableItemByID(itemID) then
+    mtext = format(P.MACRO_ACTIVE,itemID)
   end
   if (bt.itemCount ~= itemCount) or (bt.itemID ~= itemID) or (bt.isGlow ~= isGlow) or (bt.mtext ~= mtext) or (bt.mtype ~= mtype) or (bt.mspell ~= mspell) or (bt.mtarget ~= mtarget) or (bt.mtargetitem ~= mtargetitem) or (bt.bagID ~= bagID) or (bt.slotID ~= slotID) then
     bt.prio = prio
     bt.showID = itemID
     bt.itemID = itemID
     bt.isGlow = isGlow
+    bt.mtext = mtext
     bt.mtype = mtype
     bt.mspell = mspell
     bt.mtarget = mtarget
