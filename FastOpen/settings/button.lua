@@ -321,13 +321,16 @@ function FastOpen:ButtonShow()
   self:ButtonCount(bt.itemCount)
   bt.icon:SetTexture(bt.itemTexture or DEFAULT_ICON)
   if (bt:IsMouseMotionFocus()) then self:ButtonOnEnter(bt) end
-  
+
+  bt:SetAttribute("type1", nil)
   bt:SetAttribute("macrotext1", nil)
   bt:SetAttribute("type", nil)
   bt:SetAttribute("spell", nil)
   bt:SetAttribute("target-item", nil)
   bt:SetAttribute("item", nil)
-  
+  bt:SetAttribute("target-bag", nil)
+  bt:SetAttribute("target-slot", nil)
+
   if bt.itemTexture then
     if bt.mtext then
       bt:SetAttribute("type1", "macro")

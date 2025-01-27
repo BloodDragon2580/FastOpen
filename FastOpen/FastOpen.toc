@@ -2,7 +2,7 @@
 ## Title:|cffd6266cFastOpen|r
 ## Notes: Auto Open Items
 ## Author: BloodDragon2580
-## Version: 7.1
+## Version: 7.2
 ## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
 ## SavedVariables: FastOpenProfile
 
