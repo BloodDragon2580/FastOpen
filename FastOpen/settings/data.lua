@@ -1,12 +1,9 @@
--- Data tables
 local _
--- global functions and variebles to locals to keep LINT happy
 local assert = _G.assert
 local LibStub = _G.LibStub; assert(LibStub ~= nil,'LibStub')
--- local AddOn
 local ADDON, P = ...
 local FastOpen = LibStub("AceAddon-3.0"):GetAddon(ADDON)
---
+
 local PRI_OPEN = P.PRI_OPEN; assert(PRI_OPEN ~= nil,'PRI_OPEN')
 local PRI_REP = P.PRI_REP; assert(PRI_REP ~= nil,'PRI_REP')
 local PRI_REST = P.PRI_REST; assert(PRI_REST ~= nil,'PRI_REST')
@@ -119,7 +116,6 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
   [196595] = {{1,PRI_REP},nil,nil}, -- "Vault Head Forgestone"
   --10.0 Primordial Stones
   [204573] = {{1,PRI_REP},nil,nil}, -- Opening "Condensed ... Magic"
-
   --10.1
   [205250] = {{1,PRI_OPEN},nil,nil}, -- Loamm Niffen Valuable
   [205991] = {{1,PRI_OPEN},nil,nil}, -- Loamm Niffen - Symbol of Friendship
@@ -149,7 +145,7 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
   [217320] = {{1,PRI_REP},nil,nil}, -- "Quickened Bronzestone" Fated tokens
   [217328] = {{1,PRI_REP},nil,nil}, -- "Ephemeral Hypersphere" Fated tokens
   [217324] = {{1,PRI_REP},nil,nil}, -- "Decelerating Chronograph" Fated tokens
-  
+
   --11.0
   [224982] = {{1,PRI_REP},nil,nil}, -- "Delver's Dirigible Schematic" - Interpreting
   --Tier Tokens
@@ -161,7 +157,7 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
 
   --Delve
   [227784] = {{1,PRI_OPEN},nil,nil}, -- Delver's Bounty
-  
+
 }
 FastOpen.T_RECIPES = { -- [ItemId] = {{count_to_use,priority}, "gsub regex" | tooltip-line-number,{"sub-Zone",...},{[mapID]=true,...}, factionID}, item tooltip template only text to 1st match is compared, that mean all items of same school would be looked up.
   [153135] = {{1,PRI_TOKEN},4,nil,nil}, -- Unsullied Cloth Robes, why Blizzard did put in type of armor?
@@ -536,7 +532,7 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [189716] = {{1,PRO_OPEN},nil,nil}, -- Pocopoc's Face Decoration
   [189717] = {{1,PRO_OPEN},nil,nil}, -- Pocopoc's Shielded Core
   [189718] = {{1,PRO_OPEN},nil,nil}, -- Pocopoc's Upgraded Core
-  
+
 -- Memories of the Runecarver
   [182617] = {{1,PRI_REP},nil,{[1912] = true,}}, -- Memory of Death's Embrace
   [182625] = {{1,PRI_REP},nil,{[1912] = true,}}, -- Memory of an Everlasting Grip
@@ -1363,7 +1359,7 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [213189] = {{1,PRI_OPEN},nil,nil}, -- Preserved Drakonid Tome
   [213176] = {{1,PRI_OPEN},nil,nil}, -- Preserved Isles Tome
   [213177] = {{1,PRI_OPEN},nil,nil}, -- Immaculate Tome
-
+  
   -- 11.0
   -- Sparks
   [211297] = {{2,PRI_OPEN},nil,nil}, -- Fractured Spark of Omens
@@ -1374,7 +1370,7 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [221375] = {{1,PRI_OPEN},nil,nil}, -- Pack of Runed Harbinger Crests
   [220773] = {{1,PRI_OPEN},nil,nil}, -- Celebratory Pack of Runed Harbinger Crests
   [220776] = {{1,PRI_OPEN},nil,nil}, -- Glorious Cluster of Gilded Harbinger Crests
-
+  
   -- Delves
   [225902] = {{1,PRI_OPEN},nil,nil}, -- Idol of Final Will
   [218129] = {{1,PRI_OPEN},nil,nil}, -- Porcelain Arrowhead Idol
@@ -1394,7 +1390,7 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [225908] = {{1,PRI_OPEN},nil,nil}, -- Relicblood of Zekvir
   [229899] = {{100,PRI_OPEN},nil,nil}, -- Coffer Key Shard
   [225249] = {{1,PRI_OPEN},nil,nil}, -- Rattling Bag o' Gold
-
+  
   -- Contracts
   [222597] = {{1,PRI_OPEN},nil,nil,454931}, -- Contract: Council of Dornogal
   [222598] = {{1,PRI_OPEN},nil,nil,454932}, -- Contract: Council of Dornogal
@@ -1411,63 +1407,7 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   
   -- Misc
   [217707] = {{5,PRI_OPEN},nil,nil}, -- Imperfect Null Stone
-
-  -- Ensembles
-  [219117] = {{1,PRI_OPEN},nil,nil}, -- Curious Peddler's Trinkets
-  [219118] = {{1,PRI_OPEN},nil,nil}, -- Peculiar Peddler's Trinkets
-  [219119] = {{1,PRI_OPEN},nil,nil}, -- Occult Peddler's Trinkets
-  [219120] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Khaki Uniform
-  [219121] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Ochre Uniform
-  [219122] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Burgundy Uniform
-  [219123] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Beige Uniform
-  [219124] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Navy Uniform
-  [219125] = {{1,PRI_OPEN},nil,nil}, -- Formed Artisan's Talent
-  [219126] = {{1,PRI_OPEN},nil,nil}, -- Woven Artisan's Talent
-  [219127] = {{1,PRI_OPEN},nil,nil}, -- Cast Artisan's Talent
-  [219128] = {{1,PRI_OPEN},nil,nil}, -- Stained Artisan's Talent
-  [219129] = {{1,PRI_OPEN},nil,nil}, -- Sooty Artisan's Talent
-  [219130] = {{1,PRI_OPEN},nil,nil}, -- Saffron Cartographer's Orientation
-  [219131] = {{1,PRI_OPEN},nil,nil}, -- Oceanic Cartographer's Orientation
-  [219132] = {{1,PRI_OPEN},nil,nil}, -- Crimson Cartographer's Orientation
-  [219133] = {{1,PRI_OPEN},nil,nil}, -- Deep Cartographer's Orientation
-  [219134] = {{1,PRI_OPEN},nil,nil}, -- Mossy Cartographer's Orientation
-  [219100] = {{1,PRI_OPEN},nil,nil}, -- Cardinal Educator's Knowledge
-  [219101] = {{1,PRI_OPEN},nil,nil}, -- Lilac Educator's Knowledge
-  [219102] = {{1,PRI_OPEN},nil,nil}, -- Leafy Educator's Knowledge
-  [219103] = {{1,PRI_OPEN},nil,nil}, -- Cobalt Educator's Knowledge
-  [219104] = {{1,PRI_OPEN},nil,nil}, -- Midnight Educator's Knowledge
-  [219105] = {{1,PRI_OPEN},nil,nil}, -- Sandy Quotidian Wear
-  [219106] = {{1,PRI_OPEN},nil,nil}, -- Maroon Quotidian Wear
-  [219107] = {{1,PRI_OPEN},nil,nil}, -- Earthy Quotidian Wear
-  [219108] = {{1,PRI_OPEN},nil,nil}, -- Umber Quotidian Wear
-  [219109] = {{1,PRI_OPEN},nil,nil}, -- Taupe Quotidian Wear
-  [219110] = {{1,PRI_OPEN},nil,nil}, -- Vermillion Patron's Elegance
-  [219111] = {{1,PRI_OPEN},nil,nil}, -- Royal Patron's Elegance
-  [219112] = {{1,PRI_OPEN},nil,nil}, -- Verdant Patron's Elegance
-  [219113] = {{1,PRI_OPEN},nil,nil}, -- Celestial Patron's Elegance
-  [219114] = {{1,PRI_OPEN},nil,nil}, -- Court Patron's Elegance
-  [219115] = {{1,PRI_OPEN},nil,nil}, -- Versatile Peddler's Trinkets
-  [219116] = {{1,PRI_OPEN},nil,nil}, -- Arcane Peddler's Trinkets
-  [219117] = {{1,PRI_OPEN},nil,nil}, -- Curious Peddler's Trinkets
-  [219118] = {{1,PRI_OPEN},nil,nil}, -- Peculiar Peddler's Trinkets
-  [219119] = {{1,PRI_OPEN},nil,nil}, -- Occult Peddler's Trinkets
-  [219120] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Khaki Uniform
-  [219121] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Ochre Uniform
-  [219122] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Burgundy Uniform
-  [219123] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Beige Uniform
-  [219124] = {{1,PRI_OPEN},nil,nil}, -- Toiler's Navy Uniform
-  [219125] = {{1,PRI_OPEN},nil,nil}, -- Formed Artisan's Talent
-  [219126] = {{1,PRI_OPEN},nil,nil}, -- Woven Artisan's Talent
-  [219127] = {{1,PRI_OPEN},nil,nil}, -- Cast Artisan's Talent
-  [219128] = {{1,PRI_OPEN},nil,nil}, -- Stained Artisan's Talent
-  [219129] = {{1,PRI_OPEN},nil,nil}, -- Sooty Artisan's Talent
-  [219130] = {{1,PRI_OPEN},nil,nil}, -- Saffron Cartographer's Orientation
-  [219131] = {{1,PRI_OPEN},nil,nil}, -- Oceanic Cartographer's Orientation
-  [219132] = {{1,PRI_OPEN},nil,nil}, -- Crimson Cartographer's Orientation
-  [219133] = {{1,PRI_OPEN},nil,nil}, -- Deep Cartographer's Orientation
-  [219134] = {{1,PRI_OPEN},nil,nil}, -- Mossy Cartographer's Orientation
   
-
-  --[] = {{1,PRI_OPEN},nil,nil}, --
-
+  --[] = {{1,PRI_OPEN},nil,nil}, -- 
+  
 }

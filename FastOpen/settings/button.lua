@@ -259,7 +259,7 @@ end
 function FastOpen:ButtonLoad()
   if self:inCombat() then self:TimerFire("ButtonLoad", TIMER_IDLE); return end
   if not self.BF then
-    self.BF = CreateFrame("Button", BUTTON_FRAME, self.frameHiderB, "SecureActionButtonTemplate, ActionButtonTemplate")
+    self.BF = CreateFrame("Button", BUTTON_FRAME, self.frameHiderB, "ActionButtonTemplate,SecureActionButtonTemplate")
     local bt = self.BF
     if bt:IsVisible() or bt:IsShown() then bt:Hide() end
     bt:SetFrameStrata(FastOpen.AceDB.profile.strata and "HIGH" or "MEDIUM")

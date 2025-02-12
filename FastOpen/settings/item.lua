@@ -118,6 +118,17 @@ function FastOpen:ItemGetPattern(itemID,bag,slot)
     self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as MOUNT")
     return 1, P.PRIO_OPEN
   end
+  if classID == Enum.ItemClass.Consumable and subclassID == Enum.ItemConsumableSubclass.Other then
+    local tMogSet = C_Item.GetItemLearnTransmogSet(itemID)
+    if tMogSet then
+      for _, appearance in pairs(C_Transmog.GetAllSetAppearancesByID(tMogSet)) do
+        if appearance and appearance.itemModifiedAppearanceID and not C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearance.itemModifiedAppearanceID) then
+          self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as TRANSMOG")
+          return 1, P.PRI_OPEN
+        end
+      end
+    end
+  end
   local n, p = self:ItemGetLockPattern(itemID, lines)
   if n and n > 0 then return n, p end
   for i=1,#lines do
