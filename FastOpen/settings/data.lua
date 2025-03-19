@@ -1406,8 +1406,17 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [222608] = {{1,PRI_OPEN},nil,nil,454942}, -- Contract: The Severed Threads
   
   -- Misc
-  [217707] = {{5,PRI_OPEN},nil,nil}, -- Imperfect Null Stone
-  
-  --[] = {{1,PRI_OPEN},nil,nil}, -- 
+   [217707] = {{5,PRI_OPEN},nil,nil}, -- Imperfect Null Stone
+   [230905] = {{2,PRI_OPEN},nil,nil}, -- Fractured Spark of Fortunes
+   
+   -- Crests
+   [231153] = {{1,PRI_OPEN},nil,nil}, -- Triumphant Satchel of Carved Undermine Crests
+   [231270] = {{1,PRI_OPEN},nil,nil}, -- Pack of Runed Undermine Crests
+   [231154] = {{1,PRI_OPEN},nil,nil}, -- Celebratory Pack of Runed Undermine Crests
+   [231269] = {{1,PRI_OPEN},nil,nil}, -- Satchel of Carved Undermine Crests
+   [231264] = {{1,PRI_OPEN},nil,nil}, -- Glorious Cluster of Gilded Undermine Crests
+   [231267] = {{1,PRI_OPEN},nil,nil}, -- Pouch of Weathered Undermine Crests
+   
+   --[] = {{1,PRI_OPEN},nil,nil}, -- 
   
 }

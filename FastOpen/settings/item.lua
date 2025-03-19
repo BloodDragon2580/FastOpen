@@ -115,19 +115,23 @@ function FastOpen:ItemGetPattern(itemID,bag,slot)
   end
   local itemType, itemSubType, _, _, _, _, classID, subclassID = select(6, GetItemInfo(itemID))
   if classID == Enum.ItemClass.Miscellaneous and subclassID == Enum.ItemMiscellaneousSubclass.Mount then
-    self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as MOUNT")
-    return 1, P.PRIO_OPEN
+    self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as MOUNT")
+    return 1, P.PRI_OPEN
   end
   if classID == Enum.ItemClass.Consumable and subclassID == Enum.ItemConsumableSubclass.Other then
     local tMogSet = C_Item.GetItemLearnTransmogSet(itemID)
     if tMogSet then
       for _, appearance in pairs(C_Transmog.GetAllSetAppearancesByID(tMogSet)) do
         if appearance and appearance.itemModifiedAppearanceID and not C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearance.itemModifiedAppearanceID) then
-          self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as TRANSMOG")
+          self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as TRANSMOG")
           return 1, P.PRI_OPEN
         end
       end
     end
+  end
+  if classID == Enum.ItemClass.Consumable and (subclassID == Enum.ItemConsumableSubclass.UtilityCurio or subclassID == Enum.ItemConsumableSubclass.CombatCurio) then
+    self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as CURIO")
+    return 1, P.PRI_OPEN --fallback for curios
   end
   local n, p = self:ItemGetLockPattern(itemID, lines)
   if n and n > 0 then return n, p end
@@ -136,7 +140,7 @@ function FastOpen:ItemGetPattern(itemID,bag,slot)
     if heading and heading ~= "" then
       if heading == ITEM_COSMETIC then
         if not FastOpen:ItemIsAppearanceCollected(lines) then
-          self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as COSMETIC")
+          self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as COSMETIC")
           return 1, P.PRI_OPEN
         else
           return 0
@@ -144,7 +148,7 @@ function FastOpen:ItemGetPattern(itemID,bag,slot)
       end
       if heading == TOY then
         if not FastOpen:ItemIsToyCollected(lines) then
-          self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as TOY")
+          self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as TOY")
           return 1, P.PRI_OPEN
         else
           return 0
@@ -158,7 +162,7 @@ function FastOpen:ItemGetPattern(itemID,bag,slot)
               local level, top, value, reward = self:GetReputation(heading)
               if (level and (level > 7) and FastOpen.AceDB.profile.SkipExalted) or reward then return end
             end
-            self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as RECIPE because of heading and pattern:",heading,pattern)
+            self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as RECIPE because of heading and pattern:",heading,pattern)
             return c[1], c[2], z, m
           end
         end
@@ -166,7 +170,7 @@ function FastOpen:ItemGetPattern(itemID,bag,slot)
       for key, data in pairs(T_OPEN) do
         if strfind(heading,key,1,true) then
           local c, z, m = unpack(data,1,3)
-          self:Verbose("ItemGetPattern:","itemID",itemID,name,"will be shown as OPEN")
+          self:Verbose("ItemGetPattern:","itemID",itemID,"will be shown as OPEN")
           return c[1], c[2], z, m
         end
       end
