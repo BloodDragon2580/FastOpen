@@ -159,11 +159,14 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
   [233071] = {{1,PRI_OPEN},nil,nil}, -- Delver's Bounty
   
   --Tier Tokens
-  [464833] = {{1,PRI_REP},nil,nil}, -- Polished Gallybux
-  [464834] = {{1,PRI_REP},nil,nil}, -- Rusty Gallybux
-  [464835] = {{1,PRI_REP},nil,nil}, -- Gilded Gallybux
-  [464836] = {{1,PRI_REP},nil,nil}, -- Greased Gallybux
-  [464837] = {{1,PRI_REP},nil,nil}, -- Bloody Gallybux
+  [228802] = {{1,PRI_REP},nil,nil}, -- Greased Gallybux
+  [228806] = {{1,PRI_REP},nil,nil}, -- Bloody Gallybux
+  [228810] = {{1,PRI_REP},nil,nil}, -- Gilded Gallybux
+  [228814] = {{1,PRI_REP},nil,nil}, -- Rusty Gallybux
+  [228818] = {{1,PRI_REP},nil,nil}, -- Polished Gallybux
+   
+  --Misc
+  [232981] = {{1,PRI_REP},nil,nil}, -- Installing - G99 stuff
 
  }
 FastOpen.T_RECIPES = { -- [ItemId] = {{count_to_use,priority}, "gsub regex" | tooltip-line-number,{"sub-Zone",...},{[mapID]=true,...}, factionID}, item tooltip template only text to 1st match is compared, that mean all items of same school would be looked up.
