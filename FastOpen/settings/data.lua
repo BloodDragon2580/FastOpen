@@ -1429,6 +1429,8 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
 
   -- Delves
   [236096] = {{100,PRI_OPEN},nil,nil}, -- Coffer Key Shard
+  [235531] = {{1,PRI_OPEN},nil,nil}, -- Restored Coffer Key
+  [233555] = {{1,PRI_OPEN},nil,nil}, -- Restored Coffer Key
 
   --[] = {{1,PRI_OPEN},nil,nil}, --
 
