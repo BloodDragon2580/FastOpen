@@ -34,7 +34,7 @@ FastOpen.slash_handler = function(msg, editbox) -- /FastOpen handler
       for slot = 1, GetContainerNumSlots(bag), 1 do
         local link = GetContainerItemLink(bag, slot)
         if link then
-          local _, _, itemColor, itemType, itemID = string.find(link, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):")
+          local _, _, itemType, itemID = string.find(link, "|?c[^|]*|?H?([^:]*):?(%d+):")
           print("Bag",bag,"Slot",slot,"Link",itemType or "unknow type",itemID or "unknown ID")
         end
       end

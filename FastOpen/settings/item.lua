@@ -225,7 +225,7 @@ function FastOpen:ItemScan()
       if not self:ItemIsBlacklisted(itemID) then
         local bag, slot, itemLink = unpack(data)
         if itemLink then
-          local _, _, linkColor, linkType, linkID = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):")
+          local _, _, linkType, linkID = string.find(itemLink, "|?[^|]*|?H?([^:]*):?(%d+):")
           if linkType == P.ITEM_TYPE_BATTLE_PET then
             local numCollected, limit = C_PetJournal.GetNumCollectedInfo(linkID)
             if (numCollected < limit) then
@@ -295,7 +295,7 @@ function FastOpen:ItemIsUsable(itemID)
   if not T_BAGS[itemID] then return end
   local bag,slot,itemLink = unpack(T_BAGS[itemID])
   if itemLink then
-    local _, _, linkColor, linkType, linkID = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):")
+    local _, _, linkType, linkID = string.find(itemLink, "|?c[^|]*|?H?([^:]*):?(%d+):")
     if linkType == P.ITEM_TYPE_BATTLE_PET then return true end
   end
   local lines = FastOpen:GetTooltipLinesByBagItem(bag, slot)

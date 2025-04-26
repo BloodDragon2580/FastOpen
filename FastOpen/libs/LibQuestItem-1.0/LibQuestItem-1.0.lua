@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibQuestItem-1.0", tonumber("29") or 999 -- ES increased version to take over all older instances
+local MAJOR, MINOR = "LibQuestItem-1.0", tonumber("30") or 999 -- ES increased version to take over all older instances
 local LibQuestItem = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not LibQuestItem then return end -- no need to update
@@ -42,7 +42,7 @@ local LOCALE_QUEST = ((GetItemClassInfo == nil) and select(10, GetAuctionItemCla
 -- local helpers
 -- -----
 local PATTERN_itemid = "item:(%-?%d+).+" -- ES legion ware fix removed :%-?%d+:%-?%d+:%-?%d+:%-?%d+:%-?%d+:%-?%d+:%-?%d+:%-?%d+"
-local PATTERN_itemlink = "|c%x+|H"..PATTERN_itemid.."|h%[.-%]|h|r"
+local PATTERN_itemlink = "|c[^|]+|H"..PATTERN_itemid.."|h%[.-%]|h|r"
 local FORMAT_itemid = "item:%d:0:0:0:0:0:0:0"
 local questItemsNeededPattern = "(.+): (%d+)/(%d+)" -- string.gsub(string.gsub(QUEST_ITEMS_NEEDED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)")
 
