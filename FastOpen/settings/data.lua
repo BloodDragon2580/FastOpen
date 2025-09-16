@@ -170,6 +170,14 @@ FastOpen.T_SPELL_BY_NAME = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",
 
   --11.1.7
   [244901] = {{1,PRI_REP},nil,nil}, -- Loading - D.I.S.C.
+  
+  --11.2
+  --Tier Tokens
+  [237592] = {{1,PRI_REP},nil,nil}, -- Foreboding Beaker
+  [237588] = {{1,PRI_REP},nil,nil}, -- Binding Agent
+  [237596] = {{1,PRI_REP},nil,nil}, -- Silken Offering
+  [237584] = {{1,PRI_REP},nil,nil}, -- Voidglass Contaminant
+  [237600] = {{1,PRI_REP},nil,nil}, -- Yearning Cursemark
 }
 FastOpen.T_RECIPES = { -- [ItemId] = {{count_to_use,priority}, "gsub regex" | tooltip-line-number,{"sub-Zone",...},{[mapID]=true,...}, factionID}, item tooltip template only text to 1st match is compared, that mean all items of same school would be looked up.
   [153135] = {{1,PRI_TOKEN},4,nil,nil}, -- Unsullied Cloth Robes, why Blizzard did put in type of armor?

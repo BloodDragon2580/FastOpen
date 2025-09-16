@@ -25,6 +25,8 @@ local FastOpen = LibStub("AceAddon-3.0"):GetAddon(ADDON)
 --
 local T_CHECK = P.T_CHECK; assert(T_CHECK ~= nil,'T_CHECK')
 local print = P.print; assert(print ~= nil,'print')
+local PRI_OPEN = P.PRI_OPEN; assert(PRI_OPEN ~= nil,'PRI_OPEN')
+
 --
 FastOpen.slash_handler = function(msg, editbox) -- /FastOpen handler
   local line = msg:lower()
@@ -194,6 +196,15 @@ FastOpen.slash_handler = function(msg, editbox) -- /FastOpen handler
   if cmd == "zone" then
     FastOpen.AceDB.profile["zoneUnlock"] = not FastOpen.AceDB.profile.zoneUnlock
     FastOpen:BAG_UPDATE()
+    return
+  end
+  if cmd == "add" then
+    local id = tonumber(arg)
+    local printed = false
+    if id then
+      if FastOpen.AceDB.profile["T_TRACKLIST"] ~= nil then FastOpen.AceDB.profile.T_TRACKLIST[id] = {{1,PRI_OPEN},nil,nil}; FastOpen:BAG_UPDATE() end
+      print("Item ID",id,"added to the tracking list.")
+    end
     return
   end
   local usage = {string.split("\n", P.L["FastOpen_USE"] .. P.CONSOLE_CMD .. P.CONSOLE_USAGE)}

@@ -61,7 +61,7 @@ function FastOpen:ItemGetSpell(itemID)
   end
 end
 function FastOpen:ItemGetItem(itemID)
-  local ref = FastOpen.T_ITEMS[itemID] or FastOpen.T_DISENCHANT_ITEMS[itemID]
+  local ref = FastOpen.T_ITEMS[itemID] or FastOpen.T_DISENCHANT_ITEMS[itemID] or FastOpen.AceDB.profile["T_TRACKLIST"][itemID]
   if not ref then return end
   local c,z,m,a = unpack(ref,1,4)
   if m and not m[self.mapID] then

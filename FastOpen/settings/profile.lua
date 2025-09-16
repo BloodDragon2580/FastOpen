@@ -34,6 +34,7 @@ function FastOpen:ProfileLoad() -- LUA stored variables load and init
       ["qb_sticky"] = true, -- Quest Bar is anchored to Item Button
       ["T_BLACKLIST"] = {}, -- Permanent blacklist for items button
       ["T_BLACKLIST_Q"] = {}, -- Permanent blacklist for quest items
+      ["T_TRACKLIST"] = {}, -- Permanent track-list for manually added items
       ["Skip"] = false,
       ["zoneUnlock"] = true,
       ["glowButton"] = true,
