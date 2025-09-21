@@ -1443,6 +1443,11 @@ FastOpen.T_ITEMS = { -- [itemID] = {{count_to_use,priority},{"sub-Zone",...},{[m
   [233555] = {{1,PRI_OPEN},nil,nil}, -- Restored Coffer Key
 
   -- 11.2
+
+  -- Delves
+  [245653] = {{100,PRI_OPEN},nil,nil}, -- Coffer Key Shard
+  [1239571] = {{1,PRI_OPEN},nil,nil}, -- Restored Coffer Key
+
   -- Sparks
   [231757] = {{2,PRI_OPEN},nil,nil}, -- Fractured Spark of Fortunes
   --[] = {{1,PRI_OPEN},nil,nil}, -- 
