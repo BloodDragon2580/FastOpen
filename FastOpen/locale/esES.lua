@@ -114,4 +114,5 @@ skip   - Omite temporalmente un objeto hasta su recargar la interface
 glow   - Activa/desactiva el resplandor del botón al cambiar de zona
 zone   - Muestra/oculta zone restriction on items
 quest  - Muestra/oculta la barra de objetos de misión
-show   - Muestra/oculta el botón vacío]=];
+show   - Muestra/oculta el botón vacío
+add    - agregar 'itemID [cantidad]' a la lista de artículos]=];

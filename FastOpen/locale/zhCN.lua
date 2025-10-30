@@ -109,9 +109,10 @@ skin   - 將會切換按鈕皮膚
 lock   - 將會鎖定/解鎖按鈕
 clear  - 將會重置永遠黑名單
 list   - 列出永遠黑名單物品
-unlist - remove single item from blacklist based on itemID
+unlist - 根據物品ID從黑名單移除單獨物品
 skip   - 切換右鍵點擊略過臨時或是直到重新記錄
 glow   - 切換按鈕在區域時物品發亮
 zone   - 切換物品區域限制
 quest  - 開關任務條
-show   - 空按鈕可見]=];
+show   - 空按鈕可見
+add    - 將「itemID [數量]」加入到商品清單中]]=];

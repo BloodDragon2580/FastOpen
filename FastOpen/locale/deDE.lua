@@ -114,4 +114,5 @@ skip   - schaltet das Rechtsklick-Überspringen zwischen 'temporär' und 'bis zu
 glow   - aktiviert/deaktiviert Aufleuchten der Schaltfläche bei Zonenwechsel
 zone   - aktiviert/deaktiviert Zonenabhängigkeit bei Gegenständen
 quest  - aktiviert/deaktiviert Quest-Leiste
-show   - macht die Schaltfläche sichtbar]=];
+show   - macht die Schaltfläche sichtbar
+add    - fügt 'itemID [anzahl]' zur Item-Liste hinzu]=];

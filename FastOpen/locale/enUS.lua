@@ -114,4 +114,5 @@ skip   - toggle right click skip temporary or until relog
 glow   - toggle button glow on zone items
 zone   - toggle zone restriction on items
 quest  - toggle quest bar
-show   - visible empty button]=];
+show   - visible empty button
+add    - add 'itemID [quantity]' to the item list]=];
