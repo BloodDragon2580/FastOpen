@@ -387,8 +387,8 @@ function FastOpen:ItemShow(itemID,prio)
   if type(itemTexture) == "table" then
     itemTexture = itemTexture.iconFileID
   end
-  local mtext = nil
-  local mtarget = format("item:%d", itemID)
+  local mtext = format(P.MACRO_ACTIVE,itemID)
+  local mtarget = nil 
   local mtargetitem = nil
   local mtargetbag = nil
   local mtartgetslot = nil
