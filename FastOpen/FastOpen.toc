@@ -1,8 +1,8 @@
-## Interface: 120000
+## Interface: 120001
 ## Title:|cffd6266cFastOpen|r
 ## Notes: Auto Open Items
 ## Author: BloodDragon2580
-## Version: 11.5
+## Version: 11.6
 ## IconTexture: Interface\AddOns\FastOpen\Media\Texture\logo
 ## SavedVariables: FastOpenProfile
 
